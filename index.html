@@ -706,7 +706,7 @@ html, body {
     <div class="ico">🎉</div>
     <h2>Obrigado!</h2>
     <p>Sua avaliação foi registrada. Isso nos ajuda a melhorar a cada atendimento.</p>
-    <button id="bnova" onclick="reset()">Nova avaliação</button>
+    <button id="bnova" onclick="reset();ir(0)">Nova avaliação</button>
   </div>
 
   <!-- NAV -->
@@ -730,8 +730,15 @@ const firebaseConfig = {
   appId:             "1:639939339141:web:7d2daf111b28857dfe9aec"
 };
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+let db = null;
+try {
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.firestore();
+  // Habilitar persistência offline
+  db.enablePersistence().catch(() => {});
+} catch(e) {
+  console.warn("Firebase não disponível — modo offline ativo.", e);
+}
 
 // ── CONSTANTES ─────────────────────────────────────────────
 const MARCAS = [
@@ -755,7 +762,7 @@ let nprod = 0;
 document.addEventListener("DOMContentLoaded", () => {
   addProd();
   carregarVendsFirebase();
-  atualizarNav();
+  ir(0);
 });
 
 // ── VENDEDORES (Firebase + localStorage fallback) ───────────
@@ -768,6 +775,7 @@ function carregarVends() {
 }
 
 function carregarVendsFirebase() {
+  if (!db) { renderVends(); return; }
   db.collection("vendedores").doc("loja-teresina").get()
     .then(doc => {
       if (doc.exists) {
@@ -940,7 +948,11 @@ async function enviar() {
   document.getElementById("bnext").disabled = true;
 
   try {
-    await db.collection("respostas").add(dados);
+    if (db) {
+      await db.collection("respostas").add(dados);
+    } else {
+      throw new Error("Firebase offline");
+    }
     obrigado();
   } catch(err) {
     console.error("Erro Firebase:", err);
@@ -974,8 +986,6 @@ function reset() {
   document.getElementById("pger").classList.remove("on");
   addProd();
   renderVends();
-  ir(0);
-  document.getElementById("nav").style.display = "flex";
 }
 
 // ── PAINEL GERENTE ─────────────────────────────────────────
@@ -1016,13 +1026,16 @@ function salvarVends() {
   document.getElementById("pger").classList.remove("on");
 
   // Grava no Firebase para persistir entre dispositivos e recarregamentos
-  db.collection("vendedores").doc("loja-teresina").update({
-    v1: novos[0], v2: novos[1], v3: novos[2],
-    v4: novos[3], v5: novos[4], v6: novos[5]
-  })
-  .then(() => alert("✅ Nomes salvos!"))
-  .catch(() => alert("✅ Nomes salvos localmente!
-⚠️ Sem conexão — sincronize depois."));
+  if (db) {
+    db.collection("vendedores").doc("loja-teresina").update({
+      v1: novos[0], v2: novos[1], v3: novos[2],
+      v4: novos[3], v5: novos[4], v6: novos[5]
+    })
+    .then(() => alert("✅ Nomes salvos!"))
+    .catch(() => alert("✅ Nomes salvos localmente!\n⚠️ Sem conexão — sincronize depois."));
+  } else {
+    alert("✅ Nomes salvos localmente!");
+  }
 }
 
 function trocarSenha() {
