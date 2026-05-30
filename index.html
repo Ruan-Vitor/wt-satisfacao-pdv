@@ -176,15 +176,23 @@ html, body {
 /* ── SCROLL AREA ────────────────────────────────────────── */
 #wrap {
   flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ── TELAS ──────────────────────────────────────────────── */
+.scr {
+  display: none;
+  position: absolute;
+  inset: 0;
   overflow-y: auto;
   padding: 14px 14px 0;
   -webkit-overflow-scrolling: touch;
 }
-#wrap::-webkit-scrollbar { display: none; }
-
-/* ── TELAS ──────────────────────────────────────────────── */
-.scr { display: none; }
+.scr::-webkit-scrollbar { display: none; }
 .scr.on { display: block; animation: up .32s ease both; }
+#t0.on { display: flex; }
+#tobg.on { display: flex; }
 @keyframes up {
   from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -551,7 +559,7 @@ html, body {
       <h1>Sua opinião<br><span>faz a diferença</span></h1>
       <p>Leva menos de 1 minuto e nos ajuda a melhorar cada atendimento.</p>
       <p class="tm">⏱ Rápido &nbsp;·&nbsp; Opcional &nbsp;·&nbsp; Anônimo</p>
-      <button id="bcomecar" onclick="ir(1)">Avaliar agora</button>
+      <button id="bcomecar" onclick="reset();ir(1)">Avaliar agora</button>
     </div>
 
     <!-- TELA 1: PRODUTO -->
@@ -841,7 +849,10 @@ function estrela(n) {
 
 // ── NAVEGAÇÃO ──────────────────────────────────────────────
 function ir(n) {
-  document.querySelectorAll(".scr").forEach(s => s.classList.remove("on"));
+  document.querySelectorAll(".scr").forEach(s => {
+    s.classList.remove("on");
+    s.scrollTop = 0;
+  });
   document.getElementById("tobg").classList.remove("on");
   document.getElementById("nav").style.display = "flex";
 
@@ -851,7 +862,6 @@ function ir(n) {
   tela = n;
   atualizarNav();
   atualizarPg();
-  document.getElementById("wrap").scrollTop = 0;
 }
 
 function navV(d) {
