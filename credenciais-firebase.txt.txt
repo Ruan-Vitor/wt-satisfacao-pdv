@@ -1,0 +1,25 @@
+CREDENCIAIS
+
+FIREBASE
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyDwAL3IkbGaLXVFDZELIvrz5OTztKu2NHE",
+  authDomain: "wt-satisfacao-pdv.firebaseapp.com",
+  projectId: "wt-satisfacao-pdv",
+  storageBucket: "wt-satisfacao-pdv.firebasestorage.app",
+  messagingSenderId: "639939339141",
+  appId: "1:639939339141:web:7d2daf111b28857dfe9aec"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
+
+
+GITHUB
+https://github.com/Ruan-Vitor/wt-satisfacao-pdv.git
