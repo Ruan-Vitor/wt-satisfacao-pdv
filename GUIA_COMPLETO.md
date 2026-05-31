@@ -1,203 +1,212 @@
-# 🎽 WT Satisfação PDV — Guia Completo de Deploy
-## GitHub + Vercel + Firebase · Versão 3.0
+# 🎽 WT Satisfação PDV — Guia Completo
+## GitHub + Vercel + Firebase + Sheets + Looker Studio · Versão 4.0
 
-> Leia do início ao fim antes de começar. Cada etapa depende da anterior.
-> Tempo total estimado: ~1 hora na primeira vez.
-
----
-
-## PRÉ-REQUISITOS — Instalar antes de tudo
-
-### 1. Git
-1. Acesse https://git-scm.com/download/win
-2. Baixe e instale com todas as opções padrão (apenas clique em Next)
-3. Para confirmar: abra o **Terminal do VSCode** (`Ctrl + J`) e digite:
-   ```
-   git --version
-   ```
-   Deve aparecer algo como `git version 2.44.0`
-
-### 2. Python
-1. Acesse https://python.org/downloads
-2. Baixe a versão mais recente (botão amarelo grande)
-3. **IMPORTANTE**: na tela de instalação, marque ✅ **"Add Python to PATH"** antes de clicar em Install
-4. Para confirmar: no terminal do VSCode:
-   ```
-   python --version
-   ```
+> Este guia documenta tudo que foi feito e o que ainda falta.
+> Etapas marcadas com ✅ já estão concluídas.
 
 ---
 
-## ETAPA 1 — Abrir a pasta no VSCode · 2 min
+## SITUAÇÃO ATUAL DO PROJETO
 
-1. Abra o **VSCode**
-2. Clique em **File → Open Folder**
-3. Navegue até: `D:\Fanuel\Projetos Editáveis\WT Satisfação PDV`
-4. Clique em **"Selecionar Pasta"**
-5. Abra o terminal integrado com `Ctrl + J`
-
-Confirme que está na pasta certa digitando `cd` — deve mostrar o caminho completo.
-
----
-
-## ETAPA 2 — Criar o projeto no Firebase · 15 min
-
-### 2.1 Criar conta e projeto
-1. Acesse https://console.firebase.google.com (login com sua conta Google)
-2. Clique em **"Adicionar projeto"**
-3. Nome: `wt-satisfacao-pdv`
-4. **Desative** o Google Analytics → clique em **"Criar projeto"**
-
-### 2.2 Criar o banco Firestore
-1. Menu lateral → **"Firestore Database"** → **"Criar banco de dados"**
-2. Escolha **"Iniciar no modo de produção"** → **Próximo**
-3. Localização: **southamerica-east1** (São Paulo)
-4. Clique em **"Criar"**
-
-### 2.3 Configurar regras de segurança
-1. Dentro do Firestore → aba **"Regras"**
-2. Apague tudo e cole:
-```
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /respostas/{doc} {
-      allow create: if true;
-      allow read, update, delete: if false;
-    }
-    match /vendedores/{doc} {
-      allow read: if true;
-      allow write: if false;
-    }
-  }
-}
-```
-3. Clique em **"Publicar"**
-
-> Qualquer pessoa pode ENVIAR uma resposta, mas ninguém pode ler ou
-> alterar os dados pelo formulário. Você acessa tudo pelo console do Firebase.
-
-### 2.4 Criar coleção de vendedores
-1. Firestore → **"+ Iniciar coleção"**
-2. ID da coleção: `vendedores` → Próximo
-3. ID do documento: `loja-teresina`
-4. Adicione os campos (um por um):
-
-| Campo | Tipo | Valor inicial |
+| Componente | Status | Observação |
 |---|---|---|
-| v1 | string | João |
-| v2 | string | Maria |
-| v3 | string | Carlos |
-| v4 | string | Ana |
-| v5 | string | Pedro |
-| v6 | string | Lúcia |
-
-5. Clique em **"Salvar"**
-
-### 2.5 Pegar as credenciais
-1. Engrenagem ⚙️ → **"Configurações do projeto"**
-2. Role para baixo → **"Seus aplicativos"** → clique em `</>`
-3. Apelido: `wt-formulario` → **"Registrar app"**
-4. **Copie e guarde** o bloco `firebaseConfig` — vai usar na Etapa 4
+| Firebase Firestore | ✅ Ativo | Recebendo respostas |
+| Formulário (Vercel) | ✅ No ar | wt-satisfacao-pdv.vercel.app |
+| GitHub | ✅ Configurado | push.py funcionando |
+| Sheets — sincronização | ✅ Automática a cada 30min | SincronizarFirebase.gs v5.0 |
+| Sheets — menu WT Admin | ✅ Ativo | Apagar por linha ou por data |
+| Alerta nota baixa (≤2) | ✅ No script | Vai junto na sincronização |
+| **Alerta em tempo real** | ⏳ A fazer | Ainda tem delay de 30min |
+| **Looker Studio** | ⏳ A fazer | Próxima etapa |
 
 ---
 
-## ETAPA 3 — Criar repositório no GitHub e fazer o primeiro push · 10 min
+## PRÉ-REQUISITOS — já instalados ✅
 
-### 3.1 Configurar Git (uma única vez)
-No terminal do VSCode:
-```
-git config --global user.name "Ruan Vitor"
-git config --global user.email "ruanvn1@gmail.com"
-```
-
-### 3.2 Criar repositório no GitHub
-1. Acesse https://github.com/new
-2. Repository name: `wt-satisfacao-pdv`
-3. Visibility: **Public**
-4. **NÃO** marque "Add a README file"
-5. Clique em **"Create repository"**
-6. Copie a URL do repositório: `https://github.com/Ruan-Vitor/wt-satisfacao-pdv.git`
-
-### 3.3 Rodar o script de setup
-No terminal do VSCode:
-```
-python setup_github.py
-```
-Cole a URL do repositório quando solicitado e pressione Enter.
-Na primeira vez, o navegador vai abrir pedindo autenticação no GitHub — clique em **"Authorize"**.
+- Git instalado e configurado (`git config --global user.name/email`)
+- Python instalado com PATH habilitado
+- VSCode com a pasta do projeto aberta em `D:\Fanuel\Projetos Editáveis\WT Satisfação PDV`
 
 ---
 
-## ETAPA 4 — Inserir suas credenciais no index.html · 5 min
+## ETAPA 1 — Firebase ✅ CONCLUÍDA
 
-Abra o `index.html` no VSCode e use `Ctrl+H` para substituir:
+**O que foi feito:**
+- Projeto `wt-satisfacao-pdv` criado no Firebase
+- Firestore criado na região `southamerica-east1` (São Paulo)
+- Regras de segurança configuradas: qualquer um pode criar resposta, ninguém lê pelo formulário
+- Coleção `vendedores` criada com documento `loja-teresina` (v1 a v6: João, Maria, Carlos, Ana, Pedro, Lúcia)
+- App web registrado e credenciais copiadas para o `index.html`
 
-| Localizar | Substituir por |
+**Credenciais do projeto:**
+```
+projectId:  wt-satisfacao-pdv
+apiKey:     AIzaSyDwAL3IkbGaLXVFDZELIvrz5OTztKu2NHE
+```
+
+---
+
+## ETAPA 2 — GitHub + Vercel ✅ CONCLUÍDA
+
+**O que foi feito:**
+- Repositório criado: `https://github.com/Ruan-Vitor/wt-satisfacao-pdv`
+- Vercel conectado ao repositório com auto-deploy
+- Site publicado em: `https://wt-satisfacao-pdv.vercel.app`
+
+**Como atualizar o site (dia a dia):**
+```
+python push.py "Descrição do que mudou"
+```
+O Vercel detecta o push e atualiza em ~30 segundos.
+
+---
+
+## ETAPA 3 — Formulário ✅ CONCLUÍDA
+
+**Telas do formulário:**
+- Tela 0: Boas-vindas (logo WT + marca d'água FB)
+- Tela 1: Produto (marca em chips, faixa de preço, modelo, comentário)
+- Tela 2: Perfil (faixa etária, sexo, comentário)
+- Tela 3: Avaliação (estrelas 1–5, contato se nota ≤ 2, comentário)
+- Tela 4: Vendedor (chips carregados do Firebase, painel do gerente, comentário)
+- Tela 5: Agradecimento
+
+**Painel do gerente:**
+- Senha padrão: `1234`
+- Para trocar o nome de um vendedor: Tela 4 → botão "Painel do gerente" → senha → editar → Salvar
+- O nome salvo vai para o Firebase e fica visível em todos os dispositivos
+
+---
+
+## ETAPA 4 — Google Sheets + Apps Script ✅ CONCLUÍDA
+
+**Arquivos no Apps Script da planilha "Respostas WT Teresina Shopping":**
+
+| Arquivo | Função |
 |---|---|
-| `SEU_API_KEY` | apiKey do passo 2.5 |
-| `SEU_AUTH_DOMAIN` | authDomain do passo 2.5 |
-| `SEU_PROJECT_ID` | projectId do passo 2.5 |
-| `SEU_APP_ID` | appId do passo 2.5 |
-| `SRC_LOGO_WT` | URL do Drive (veja abaixo) |
-| `SRC_LOGO_FB` | URL do Drive (veja abaixo) |
+| `appsscript.json` | Escopos OAuth (datastore, spreadsheets, gmail, scriptapp) |
+| `SincronizarFirebase.gs` | Sincroniza Firebase → Sheets a cada 30min |
+| `PainelAdmin.gs` | Menu "WT Admin" para apagar respostas |
+| `AtualizarFormularioWT.gs` | Script antigo para Google Forms (pode ignorar) |
 
-**URLs das imagens do Drive:**
-1. Botão direito na imagem → Compartilhar → "Qualquer pessoa com o link"
-2. Pegue o ID do link (a parte entre `/d/` e `/view`)
-3. Monte a URL: `https://drive.google.com/uc?export=view&id=COLE_O_ID_AQUI`
+**Como funciona a sincronização:**
+- Roda automaticamente a cada 30 minutos
+- Apaga respostas vazias do Firebase
+- Adiciona apenas registros novos na planilha (não duplica)
+- Envia e-mail de alerta para `ruanvn1@gmail.com` quando nota ≤ 2
+- Envia relatório diário às 22h com total e média por vendedor
 
-Salve com `Ctrl+S`.
+**Como forçar sincronização agora (sem esperar 30min):**
+1. Abra a planilha → **WT Admin → Sincronizar agora**
+2. Ou acesse Apps Script → selecione `sincronizar` → Executar
 
----
+**Menu WT Admin na planilha:**
+- `Apagar linhas selecionadas` — selecione as linhas e use este menu; apaga da planilha e do Firebase ao mesmo tempo
+- `Apagar por data (testes)` — abre painel lateral, escolha a data, apaga tudo daquele dia
+- `Sincronizar agora` — força sincronização imediata sem esperar 30min
 
-## ETAPA 5 — Enviar alterações para o GitHub · 1 min
+**Colunas da aba "Respostas":**
 
-```
-python push.py "Adiciona credenciais Firebase e imagens"
-```
-
----
-
-## ETAPA 6 — Publicar no Vercel · 10 min
-
-1. Acesse https://vercel.com → **"Sign Up"** → **"Continue with GitHub"**
-2. No painel → **"Add New..."** → **"Project"**
-3. Encontre `wt-satisfacao-pdv` → **"Import"**
-4. Framework Preset: **"Other"**
-5. Clique em **"Deploy"** e aguarde ~1 minuto
-
-Seu link estará disponível:
-```
-https://wt-satisfacao-pdv.vercel.app
-```
-
-**A partir de agora:** cada `python push.py "..."` atualiza o site em ~30 segundos automaticamente.
-
----
-
-## ETAPA 7 — Sincronizar Firebase com Google Sheets · 10 min
-
-1. Abra a planilha **"Respostas WT Teresina Shopping"** → **Extensões → Apps Script**
-2. Apague o código e cole o conteúdo de **`SincronizarFirebase.gs`**
-3. Substitua `SEU_PROJECT_ID` pelo seu projectId
-4. Substitua `SUA_CHAVE_API_FIREBASE` pela `apiKey` do Firebase
-5. Execute **`configurarSincronizacao`** uma vez e autorize
-
-O script sincroniza automaticamente a cada 30 minutos. O Looker Studio continua funcionando normalmente lendo do Sheets.
+| Coluna | Dado |
+|---|---|
+| A | Data/Hora |
+| B | Marcas |
+| C | Modelos |
+| D | Faixa de Preço |
+| E | Faixa Etária |
+| F | Sexo |
+| G | Nota (1–5) |
+| H | Contato |
+| I | Vendedor |
+| J | Comentário Produto |
+| K | Comentário Perfil |
+| L | Comentário Avaliação |
+| M | Comentário Vendedor |
+| N | Firebase ID |
 
 ---
 
-## Manutenção do dia a dia
+## ETAPA 5 — Alerta em tempo real ⏳ A FAZER
+
+**Problema atual:** o alerta de nota baixa (≤ 2) só chega quando a sincronização de 30 em 30 minutos roda — pode demorar até 30 minutos após o cliente enviar.
+
+**Solução:** enviar o e-mail de alerta direto do formulário (`index.html`) no momento do envio, sem passar pelo Sheets.
+
+**Como implementar:**
+1. Criar um endpoint gratuito no [EmailJS](https://www.emailjs.com) ou [Formspree](https://formspree.io)
+2. No `index.html`, na função `enviar()`, após salvar no Firebase, verificar se `nota <= 2` e disparar o e-mail via API
+3. O alerta chega em segundos, independente da sincronização do Sheets
+
+> Isso não afeta o relatório diário — ele continua funcionando normalmente via Apps Script.
+
+---
+
+## ETAPA 6 — Looker Studio ⏳ A FAZER
+
+**Pré-requisito:** a planilha "Respostas WT Teresina Shopping" com dados reais (já temos 65 respostas de teste).
+
+**Como criar o dashboard:**
+
+1. Acesse [lookerstudio.google.com](https://lookerstudio.google.com)
+2. Clique em **"Em branco"** para criar um novo relatório
+3. **Conectar fonte de dados:**
+   - Clique em "Adicionar dados" → "Google Sheets"
+   - Selecione a planilha "Respostas WT Teresina Shopping"
+   - Selecione a aba **"Respostas"**
+   - Clique em **"Adicionar"**
+
+**Gráficos recomendados para o dashboard:**
+
+| Gráfico | Dimensão | Métrica | Insight |
+|---|---|---|---|
+| Scorecard | — | COUNT(Firebase ID) | Total de respostas |
+| Scorecard | — | AVG(Nota 1-5) | Média geral |
+| Gráfico de barras | Vendedor | AVG(Nota 1-5) | Ranking de vendedores |
+| Gráfico de pizza | Marcas | COUNT | Marcas mais vendidas |
+| Gráfico de barras | Faixa Etária | COUNT | Perfil dos clientes |
+| Gráfico de linha | Data/Hora (por dia) | COUNT | Volume ao longo do tempo |
+| Gráfico de pizza | Sexo | COUNT | Distribuição por sexo |
+| Gráfico de pizza | Faixa de Preço | COUNT | Ticket dos clientes |
+| Tabela | Vendedor | COUNT, AVG(Nota) | Tabela de performance |
+
+**Filtros recomendados:**
+- Seletor de intervalo de datas (Data/Hora)
+- Seletor de vendedor
+- Seletor de marca
+
+---
+
+## MANUTENÇÃO DO DIA A DIA
 
 | Tarefa | Como fazer |
 |---|---|
-| Trocar nome de vendedor | Tela 4 → Painel do gerente → senha 1234 |
+| Trocar nome de vendedor | Formulário → Tela 4 → Painel do gerente → senha 1234 |
 | Atualizar o site | `python push.py "descrição"` no VSCode |
+| Forçar sync da planilha | Planilha → WT Admin → Sincronizar agora |
+| Apagar resposta específica | Planilha → selecionar linha → WT Admin → Apagar linhas selecionadas |
+| Apagar dia de testes | Planilha → WT Admin → Apagar por data (testes) |
+| Inserir dados de teste | `python inserir_testes.py` no VSCode |
 | Ver respostas brutas | console.firebase.google.com → Firestore → respostas |
-| Ver no Sheets | Planilha "Respostas WT Teresina Shopping" |
-| Dashboard | Looker Studio (link configurado anteriormente) |
+| Ver dashboard | Looker Studio (link a definir) |
+| Relatório diário | Chega por e-mail todo dia às 22h automaticamente |
+| Alerta nota baixa | Chega por e-mail na sincronização (a cada 30min — melhoria planejada) |
 
 ---
 
-*WT Satisfação PDV v3.0 — World Tennis Teresina Shopping*
+## ARQUIVOS DO PROJETO
+
+| Arquivo | O que faz |
+|---|---|
+| `index.html` | Formulário completo (4 telas + Firebase integrado) |
+| `push.py` | Envia alterações para o GitHub (atualiza o site) |
+| `setup_github.py` | Configuração inicial do repositório (já usado) |
+| `inserir_testes.py` | Insere 40 respostas de teste no Firebase |
+| `vercel.json` | Configuração de deploy no Vercel |
+| `.gitignore` | Arquivos ignorados pelo Git |
+| `SincronizarFirebase.gs` | No Apps Script — sincronização Firebase → Sheets |
+| `PainelAdmin.gs` | No Apps Script — menu WT Admin na planilha |
+
+---
+
+*WT Satisfação PDV v4.0 — World Tennis Teresina Shopping*
+*Última atualização: Maio 2026*
