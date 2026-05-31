@@ -109,7 +109,7 @@ main{padding:24px 32px;max-width:1400px;margin:0 auto}
   <div class="hdr-right">
     <div id="status"><div id="dot"></div><span id="stxt">Conectando...</span></div>
     <button class="btn-hdr btn-sync" id="btn-sync" onclick="carregar()">↺ Atualizar</button>
-    <a class="btn-hdr btn-form" href="index.html">Ir para o formulário ↗</a>
+    <a class="btn-hdr btn-form" href="https://wt-satisfacao-pdv.vercel.app" target="_blank">Ir para o formulário ↗</a>
   </div>
 </header>
 
@@ -144,17 +144,42 @@ main{padding:24px 32px;max-width:1400px;margin:0 auto}
 </main>
 
 <script>
-// ── CONFIGURAÇÃO ─────────────────────────────────────────────
-// ID da planilha Google Sheets (parte da URL entre /d/ e /edit)
-const SHEET_ID = '1w6Gu9hWMiGGsKhGnck8FMrcdRT9tOsniJpiobBqJPWg';
-// A planilha precisa estar compartilhada como "Qualquer pessoa com o link pode ver"
-const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Respostas`;
+// ── CONFIGURAÇÃO FIREBASE ─────────────────────────────────────
+const FB_PROJECT = 'wt-satisfacao-pdv';
+const FB_KEY     = 'AIzaSyDwAL3IkbGaLXVFDZELIvrz5OTztKu2NHE';
+const FB_BASE    = `https://firestore.googleapis.com/v1/projects/${FB_PROJECT}/databases/(default)/documents`;
 
 const AZUL='#1a2848', DOURADO='#e8c84a';
 const CORES=['#1a2848','#2f447a','#e8c84a','#5a6482','#27ae60','#d4d8ec','#a0a8c4','#3d5296','#f5d96a','#8899cc'];
 let DADOS=[], charts={};
 
 function destroyChart(id){if(charts[id]){charts[id].destroy();delete charts[id]}}
+
+// Extrai valor de um campo Firestore (stringValue, integerValue, etc.)
+function fbVal(f){
+  if(!f) return '';
+  if(f.stringValue  !== undefined) return f.stringValue;
+  if(f.integerValue !== undefined) return Number(f.integerValue);
+  if(f.doubleValue  !== undefined) return Number(f.doubleValue);
+  if(f.booleanValue !== undefined) return f.booleanValue;
+  if(f.timestampValue !== undefined) return f.timestampValue;
+  return '';
+}
+
+// Busca todas as páginas da coleção "respostas" (Firestore limita 300/req)
+async function fetchTodos(){
+  let docs=[], pageToken=null;
+  do {
+    let url=`${FB_BASE}/respostas?key=${FB_KEY}&pageSize=300`;
+    if(pageToken) url+=`&pageToken=${pageToken}`;
+    const r=await fetch(url);
+    if(!r.ok) throw new Error(`Firestore ${r.status}: ${await r.text()}`);
+    const j=await r.json();
+    if(j.documents) docs=docs.concat(j.documents);
+    pageToken=j.nextPageToken||null;
+  } while(pageToken);
+  return docs;
+}
 
 async function carregar(){
   const btn=document.getElementById('btn-sync');
@@ -164,20 +189,32 @@ async function carregar(){
   dot.className='load'; stxt.textContent='Buscando dados...';
 
   try {
-    const resp = await fetch(SHEET_URL);
-    const text = await resp.text();
-    // Remove o wrapper de callback do Google
-    const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
-    const rows = json.table.rows;
-    const cols = json.table.cols.map(c=>c.label);
+    const docs = await fetchTodos();
 
-    DADOS = rows.map(r=>{
-      const obj={};
-      cols.forEach((c,i)=>{ obj[c]=r.c[i]?r.c[i].v??r.c[i].f??'':'' });
-      return obj;
-    }).filter(d=>d['Firebase ID']); // só linhas com ID válido
+    DADOS = docs
+      .filter(d => d.fields)
+      .map(d => {
+        const f = d.fields;
+        // Firebase ID = parte final do name (path)
+        const fbId = d.name.split('/').pop();
+        // timestamp pode vir do campo "timestamp" ou createTime do doc
+        const ts = fbVal(f.timestamp) || d.createTime || '';
+        return {
+          'Firebase ID':   fbId,
+          'Data/Hora':     ts,
+          'Marcas':        fbVal(f.marcas),
+          'Modelos':       fbVal(f.modelos),
+          'Faixa de Preço':fbVal(f.faixa_preco),
+          'Faixa Etária':  fbVal(f.faixa_etaria),
+          'Sexo':          fbVal(f.sexo),
+          'Nota (1-5)':    Number(fbVal(f.nota)) || 0,
+          'Contato':       fbVal(f.contato),
+          'Vendedor':      fbVal(f.vendedor),
+        };
+      })
+      .filter(d => d['Firebase ID']);
 
-    // popular selects
+    // Popular selects de filtro
     const vends=[...new Set(DADOS.map(d=>d['Vendedor']).filter(Boolean))].sort();
     const marcas=[...new Set(DADOS.map(d=>d['Marcas']).filter(Boolean))].sort();
     const fv=document.getElementById('f-vend'), fm=document.getElementById('f-marca');
@@ -186,11 +223,14 @@ async function carregar(){
     fm.innerHTML='<option value="">Todas</option>'+marcas.map(m=>`<option value="${m}">${m}</option>`).join('');
     fv.value=sv; fm.value=sm;
 
-    dot.className='ok'; stxt.textContent='Atualizado agora';
+    dot.className='ok'; stxt.textContent=`${DADOS.length} respostas carregadas`;
     render();
   } catch(e){
     dot.className='err'; stxt.textContent='Erro ao carregar';
-    console.error(e);
+    console.error('Erro Firebase:', e);
+    // Mostrar erro visível na tela
+    document.getElementById('overlay').classList.add('hide');
+    alert('Erro ao carregar dados do Firebase.\n\nVerifique as regras do Firestore: a leitura da coleção "respostas" precisa estar permitida com a apiKey.\n\nDetalhes no console (F12).');
   }
 
   btn.disabled=false; btn.textContent='↺ Atualizar';
