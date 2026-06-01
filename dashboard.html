@@ -26,10 +26,7 @@ header{
 .hdr-left .logo{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;color:var(--dourado);letter-spacing:1px;text-transform:uppercase}
 .hdr-left .sub{font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:2px;text-transform:uppercase;margin-top:2px}
 .hdr-right{display:flex;align-items:center;gap:10px}
-.btn-hdr{
-  padding:7px 16px;border-radius:8px;font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;
-  cursor:pointer;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:6px;
-}
+.btn-hdr{padding:7px 16px;border-radius:8px;font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
 .btn-form{background:var(--dourado);color:var(--azul);border:none}
 .btn-form:hover{background:var(--ouro2)}
 .btn-sync{background:transparent;border:1.5px solid rgba(255,255,255,0.3);color:rgba(255,255,255,0.8)}
@@ -40,21 +37,22 @@ header{
 #dot.ok{background:var(--verde)}#dot.err{background:var(--red)}#dot.load{background:var(--dourado)}
 #stxt{font-size:12px;color:rgba(255,255,255,0.45)}
 
-.filtros{
-  background:var(--branco);border-bottom:1px solid var(--cinza2);
-  padding:12px 32px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;
-}
+.abas{background:var(--branco);border-bottom:1px solid var(--cinza2);padding:0 32px;display:flex;gap:0}
+.aba{padding:13px 18px;font-size:13px;font-weight:600;color:var(--texto2);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;user-select:none}
+.aba:hover{color:var(--azul)}
+.aba.on{color:var(--azul);border-bottom-color:var(--dourado)}
+
+.filtros{background:var(--branco);border-bottom:1px solid var(--cinza2);padding:12px 32px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
 .filtros label{font-size:11px;font-weight:700;color:var(--texto2);text-transform:uppercase;letter-spacing:.8px;margin-right:5px}
-.filtros select,.filtros input[type=date]{
-  border:1.5px solid var(--cinza2);border-radius:8px;padding:6px 11px;
-  font-family:'Barlow',sans-serif;font-size:13px;color:var(--texto);
-  background:var(--cinza);outline:none;cursor:pointer;
-}
+.filtros select,.filtros input[type=date]{border:1.5px solid var(--cinza2);border-radius:8px;padding:6px 11px;font-family:'Barlow',sans-serif;font-size:13px;color:var(--texto);background:var(--cinza);outline:none;cursor:pointer}
 .filtros select:focus,.filtros input[type=date]:focus{border-color:var(--azul2)}
 .btn-reset{background:transparent;border:1.5px solid var(--cinza2);color:var(--texto2);padding:6px 14px;border-radius:8px;font-size:13px;cursor:pointer;transition:all .2s}
 .btn-reset:hover{border-color:var(--azul);color:var(--azul)}
 
 main{padding:24px 32px;max-width:1400px;margin:0 auto}
+
+#pag-graficos{display:block}
+#pag-comentarios{display:none}
 
 .scorecards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px}
 .sc{background:var(--branco);border-radius:var(--radius);padding:18px 20px;border:1px solid var(--cinza2);border-top:3px solid var(--azul)}
@@ -65,9 +63,10 @@ main{padding:24px 32px;max-width:1400px;margin:0 auto}
 .sc-sub{font-size:12px;color:var(--texto2);margin-top:4px}
 
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
-.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:18px}
+.grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:18px;margin-bottom:18px}
 .full{grid-column:1/-1}
-@media(max-width:900px){.grid2,.grid3{grid-template-columns:1fr}}
+@media(max-width:1100px){.grid4{grid-template-columns:1fr 1fr}}
+@media(max-width:900px){.grid2,.grid4{grid-template-columns:1fr}}
 
 .card{background:var(--branco);border-radius:var(--radius);padding:20px 22px;border:1px solid var(--cinza2)}
 .card-ttl{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:var(--azul);text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px}
@@ -83,11 +82,25 @@ main{padding:24px 32px;max-width:1400px;margin:0 auto}
 .bar-bg{flex:1;height:5px;background:var(--cinza2);border-radius:3px;overflow:hidden}
 .bar-f{height:100%;border-radius:3px;background:var(--azul)}
 
-#overlay{
-  position:fixed;inset:0;background:var(--azul);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  z-index:999;transition:opacity .4s
-}
+/* COMENTARIOS */
+.cm-filtros{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.cm-filtros select{border:1.5px solid var(--cinza2);border-radius:8px;padding:6px 11px;font-family:'Barlow',sans-serif;font-size:13px;color:var(--texto);background:var(--branco);outline:none;cursor:pointer}
+.cm-count{font-size:12px;color:var(--texto2);margin-left:auto}
+.cm-lista{display:flex;flex-direction:column;gap:10px}
+.cm-card{background:var(--cinza);border-radius:10px;padding:14px 16px;border-left:3px solid var(--azul2)}
+.cm-card.nota-baixa{border-left-color:var(--red);background:#fff8f8}
+.cm-card.nota-alta{border-left-color:var(--verde);background:#f6fff9}
+.cm-meta{display:flex;align-items:center;gap:8px;margin-bottom:7px;flex-wrap:wrap}
+.cm-nota{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--cinza2);color:var(--texto)}
+.cm-nota.n1,.cm-nota.n2{background:#fde8e8;color:var(--red)}
+.cm-nota.n4,.cm-nota.n5{background:#e8f8ee;color:var(--verde)}
+.cm-vend{font-size:12px;font-weight:600;color:var(--azul2)}
+.cm-data{font-size:11px;color:var(--texto2);margin-left:auto}
+.cm-tipo{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--texto2);background:var(--cinza2);padding:2px 7px;border-radius:10px}
+.cm-txt{font-size:13px;color:var(--texto);line-height:1.5}
+.cm-vazio{text-align:center;color:var(--texto2);padding:40px;font-size:14px}
+
+#overlay{position:fixed;inset:0;background:var(--azul);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;transition:opacity .4s}
 #overlay.hide{opacity:0;pointer-events:none}
 .ov-logo{font-family:'Barlow Condensed',sans-serif;font-size:40px;font-weight:800;color:var(--dourado);letter-spacing:2px}
 .ov-sub{font-size:13px;color:rgba(255,255,255,0.45);letter-spacing:2px;margin-top:8px;animation:pulse 1.4s ease-in-out infinite}
@@ -113,6 +126,11 @@ main{padding:24px 32px;max-width:1400px;margin:0 auto}
   </div>
 </header>
 
+<div class="abas">
+  <div class="aba on" id="aba-graficos" onclick="trocarAba('graficos')">📊 Gráficos</div>
+  <div class="aba" id="aba-comentarios" onclick="trocarAba('comentarios')">💬 Comentários</div>
+</div>
+
 <div class="filtros">
   <div><label>De</label><input type="date" id="f-de" onchange="render()"></div>
   <div><label>Até</label><input type="date" id="f-ate" onchange="render()"></div>
@@ -122,29 +140,54 @@ main{padding:24px 32px;max-width:1400px;margin:0 auto}
 </div>
 
 <main>
-  <div class="scorecards">
-    <div class="sc d"><div class="sc-lbl">Total de respostas</div><div class="sc-val" id="sc-tot">—</div><div class="sc-sub">no período</div></div>
-    <div class="sc v"><div class="sc-lbl">Média geral</div><div class="sc-val" id="sc-med">—</div><div class="sc-sub">de 5 estrelas</div></div>
-    <div class="sc r"><div class="sc-lbl">Notas baixas</div><div class="sc-val" id="sc-bx">—</div><div class="sc-sub">notas 1 ou 2</div></div>
-    <div class="sc"><div class="sc-lbl">Melhor vendedor</div><div class="sc-val sm" id="sc-mv">—</div><div class="sc-sub" id="sc-mv2"></div></div>
-    <div class="sc"><div class="sc-lbl">Marca top</div><div class="sc-val sm" id="sc-mt">—</div><div class="sc-sub" id="sc-mt2"></div></div>
+  <div id="pag-graficos">
+    <div class="scorecards">
+      <div class="sc d"><div class="sc-lbl">Total de respostas</div><div class="sc-val" id="sc-tot">—</div><div class="sc-sub">no período</div></div>
+      <div class="sc v"><div class="sc-lbl">Média geral</div><div class="sc-val" id="sc-med">—</div><div class="sc-sub">de 5 estrelas</div></div>
+      <div class="sc r"><div class="sc-lbl">Notas baixas</div><div class="sc-val" id="sc-bx">—</div><div class="sc-sub">notas 1 ou 2</div></div>
+      <div class="sc"><div class="sc-lbl">Melhor vendedor</div><div class="sc-val sm" id="sc-mv">—</div><div class="sc-sub" id="sc-mv2"></div></div>
+      <div class="sc"><div class="sc-lbl">Marca top</div><div class="sc-val sm" id="sc-mt">—</div><div class="sc-sub" id="sc-mt2"></div></div>
+    </div>
+
+    <div class="grid2">
+      <div class="card full"><div class="card-ttl">Respostas por dia</div><div class="ch-wrap tall"><canvas id="ch-linha"></canvas></div></div>
+      <div class="card"><div class="card-ttl">Performance por vendedor</div><div id="tab-vend"></div></div>
+      <div class="card"><div class="card-ttl">Marcas mais vendidas</div><div class="ch-wrap"><canvas id="ch-marcas"></canvas></div></div>
+    </div>
+
+    <div class="grid4">
+      <div class="card"><div class="card-ttl">Distribuição de notas</div><div class="ch-wrap"><canvas id="ch-notas"></canvas></div></div>
+      <div class="card"><div class="card-ttl">Faixa etária</div><div class="ch-wrap"><canvas id="ch-idade"></canvas></div></div>
+      <div class="card"><div class="card-ttl">Faixa de preço</div><div class="ch-wrap"><canvas id="ch-preco"></canvas></div></div>
+      <div class="card"><div class="card-ttl">Sexo</div><div class="ch-wrap"><canvas id="ch-sexo"></canvas></div></div>
+    </div>
   </div>
 
-  <div class="grid2">
-    <div class="card full"><div class="card-ttl">Respostas por dia</div><div class="ch-wrap tall"><canvas id="ch-linha"></canvas></div></div>
-    <div class="card"><div class="card-ttl">Performance por vendedor</div><div id="tab-vend"></div></div>
-    <div class="card"><div class="card-ttl">Marcas mais vendidas</div><div class="ch-wrap"><canvas id="ch-marcas"></canvas></div></div>
-  </div>
-
-  <div class="grid3">
-    <div class="card"><div class="card-ttl">Distribuição de notas</div><div class="ch-wrap"><canvas id="ch-notas"></canvas></div></div>
-    <div class="card"><div class="card-ttl">Faixa etária</div><div class="ch-wrap"><canvas id="ch-idade"></canvas></div></div>
-    <div class="card"><div class="card-ttl">Faixa de preço</div><div class="ch-wrap"><canvas id="ch-preco"></canvas></div></div>
+  <div id="pag-comentarios">
+    <div class="card">
+      <div class="card-ttl">Comentários recentes</div>
+      <div class="cm-filtros">
+        <select id="cm-tipo" onchange="renderComentarios()">
+          <option value="">Todos os comentários</option>
+          <option value="cm1">Produto</option>
+          <option value="cm3">Avaliação</option>
+          <option value="cm4">Vendedor</option>
+        </select>
+        <select id="cm-nota-f" onchange="renderComentarios()">
+          <option value="">Todas as notas</option>
+          <option value="baixa">Notas baixas (1-2)</option>
+          <option value="alta">Notas altas (4-5)</option>
+        </select>
+        <span class="cm-count" id="cm-count"></span>
+      </div>
+      <div class="cm-lista" id="cm-lista">
+        <div class="cm-vazio">Carregando comentários...</div>
+      </div>
+    </div>
   </div>
 </main>
 
 <script>
-// ── CONFIGURAÇÃO FIREBASE ─────────────────────────────────────
 const FB_PROJECT = 'wt-satisfacao-pdv';
 const FB_KEY     = 'AIzaSyDwAL3IkbGaLXVFDZELIvrz5OTztKu2NHE';
 const FB_BASE    = `https://firestore.googleapis.com/v1/projects/${FB_PROJECT}/databases/(default)/documents`;
@@ -153,20 +196,26 @@ const AZUL='#1a2848', DOURADO='#e8c84a';
 const CORES=['#1a2848','#2f447a','#e8c84a','#5a6482','#27ae60','#d4d8ec','#a0a8c4','#3d5296','#f5d96a','#8899cc'];
 let DADOS=[], charts={};
 
+function trocarAba(aba){
+  document.getElementById('pag-graficos').style.display = aba==='graficos'?'block':'none';
+  document.getElementById('pag-comentarios').style.display = aba==='comentarios'?'block':'none';
+  document.getElementById('aba-graficos').className = 'aba'+(aba==='graficos'?' on':'');
+  document.getElementById('aba-comentarios').className = 'aba'+(aba==='comentarios'?' on':'');
+  if(aba==='comentarios') renderComentarios();
+}
+
 function destroyChart(id){if(charts[id]){charts[id].destroy();delete charts[id]}}
 
-// Extrai valor de um campo Firestore (stringValue, integerValue, etc.)
 function fbVal(f){
   if(!f) return '';
-  if(f.stringValue  !== undefined) return f.stringValue;
-  if(f.integerValue !== undefined) return Number(f.integerValue);
-  if(f.doubleValue  !== undefined) return Number(f.doubleValue);
-  if(f.booleanValue !== undefined) return f.booleanValue;
-  if(f.timestampValue !== undefined) return f.timestampValue;
+  if(f.stringValue!==undefined) return f.stringValue;
+  if(f.integerValue!==undefined) return Number(f.integerValue);
+  if(f.doubleValue!==undefined) return Number(f.doubleValue);
+  if(f.booleanValue!==undefined) return f.booleanValue;
+  if(f.timestampValue!==undefined) return f.timestampValue;
   return '';
 }
 
-// Busca todas as páginas da coleção "respostas" (Firestore limita 300/req)
 async function fetchTodos(){
   let docs=[], pageToken=null;
   do {
@@ -190,15 +239,12 @@ async function carregar(){
 
   try {
     const docs = await fetchTodos();
-
     DADOS = docs
-      .filter(d => d.fields)
-      .map(d => {
-        const f = d.fields;
-        // Firebase ID = parte final do name (path)
-        const fbId = d.name.split('/').pop();
-        // timestamp pode vir do campo "timestamp" ou createTime do doc
-        const ts = fbVal(f.timestamp) || d.createTime || '';
+      .filter(d=>d.fields)
+      .map(d=>{
+        const f=d.fields;
+        const fbId=d.name.split('/').pop();
+        const ts=fbVal(f.timestamp)||d.createTime||'';
         return {
           'Firebase ID':   fbId,
           'Data/Hora':     ts,
@@ -207,14 +253,16 @@ async function carregar(){
           'Faixa de Preço':fbVal(f.faixa_preco),
           'Faixa Etária':  fbVal(f.faixa_etaria),
           'Sexo':          fbVal(f.sexo),
-          'Nota (1-5)':    Number(fbVal(f.nota)) || 0,
+          'Nota (1-5)':    Number(fbVal(f.nota))||0,
           'Contato':       fbVal(f.contato),
           'Vendedor':      fbVal(f.vendedor),
+          'cm1':           fbVal(f.cm1),
+          'cm3':           fbVal(f.cm3),
+          'cm4':           fbVal(f.cm4),
         };
       })
-      .filter(d => d['Firebase ID']);
+      .filter(d=>d['Firebase ID']);
 
-    // Popular selects de filtro
     const vends=[...new Set(DADOS.map(d=>d['Vendedor']).filter(Boolean))].sort();
     const marcas=[...new Set(DADOS.map(d=>d['Marcas']).filter(Boolean))].sort();
     const fv=document.getElementById('f-vend'), fm=document.getElementById('f-marca');
@@ -228,9 +276,8 @@ async function carregar(){
   } catch(e){
     dot.className='err'; stxt.textContent='Erro ao carregar';
     console.error('Erro Firebase:', e);
-    // Mostrar erro visível na tela
     document.getElementById('overlay').classList.add('hide');
-    alert('Erro ao carregar dados do Firebase.\n\nVerifique as regras do Firestore: a leitura da coleção "respostas" precisa estar permitida com a apiKey.\n\nDetalhes no console (F12).');
+    alert('Erro ao carregar dados.\n\nVerifique as regras do Firestore: a leitura da coleção "respostas" precisa estar permitida com a apiKey.\n\nDetalhes no console (F12).');
   }
 
   btn.disabled=false; btn.textContent='↺ Atualizar';
@@ -264,7 +311,9 @@ function render(){
   renderDona('ch-marcas',d,'Marcas');
   renderDona('ch-idade',d,'Faixa Etária');
   renderDona('ch-preco',d,'Faixa de Preço');
+  renderDona('ch-sexo',d,'Sexo');
   renderNotas(d);
+  if(document.getElementById('pag-comentarios').style.display!=='none') renderComentarios();
 }
 
 function renderSc(d){
@@ -272,26 +321,14 @@ function renderSc(d){
   const comNota=d.filter(x=>x['Nota (1-5)']>0);
   const media=comNota.length?(comNota.reduce((a,x)=>a+(+x['Nota (1-5)']),0)/comNota.length).toFixed(1):'—';
   const baixas=d.filter(x=>x['Nota (1-5)']>0&&x['Nota (1-5)']<=2).length;
-
   const vMap={};
-  d.forEach(x=>{
-    const v=x['Vendedor'], n=+x['Nota (1-5)'];
-    if(!v||!n) return;
-    if(!vMap[v]) vMap[v]={s:0,c:0};
-    vMap[v].s+=n; vMap[v].c++;
-  });
-  let mv='—', mv2='';
-  Object.entries(vMap).sort((a,b)=>(b[1].s/b[1].c)-(a[1].s/a[1].c)).forEach(([v,s],i)=>{
-    if(i===0){mv=v; mv2=(s.s/s.c).toFixed(1)+'★ média'}
-  });
-
+  d.forEach(x=>{const v=x['Vendedor'],n=+x['Nota (1-5)'];if(!v||!n)return;if(!vMap[v])vMap[v]={s:0,c:0};vMap[v].s+=n;vMap[v].c++});
+  let mv='—',mv2='';
+  Object.entries(vMap).sort((a,b)=>(b[1].s/b[1].c)-(a[1].s/a[1].c)).forEach(([v,s],i)=>{if(i===0){mv=v;mv2=(s.s/s.c).toFixed(1)+'★ média'}});
   const mMap={};
-  d.forEach(x=>{if(x['Marcas']) mMap[x['Marcas']]=(mMap[x['Marcas']]||0)+1});
-  let mt='—', mt2='';
-  Object.entries(mMap).sort((a,b)=>b[1]-a[1]).forEach(([m,c],i)=>{
-    if(i===0){mt=m; mt2=c+' vendas'}
-  });
-
+  d.forEach(x=>{if(x['Marcas'])mMap[x['Marcas']]=(mMap[x['Marcas']]||0)+1});
+  let mt='—',mt2='';
+  Object.entries(mMap).sort((a,b)=>b[1]-a[1]).forEach(([m,c],i)=>{if(i===0){mt=m;mt2=c+' vendas'}});
   document.getElementById('sc-tot').textContent=total;
   document.getElementById('sc-med').textContent=media;
   document.getElementById('sc-bx').textContent=baixas;
@@ -304,82 +341,68 @@ function renderSc(d){
 function renderLinha(d){
   destroyChart('linha');
   const map={};
-  d.forEach(x=>{
-    const dt=x['Data/Hora'];
-    if(!dt) return;
-    const dia=String(dt).substring(0,10);
-    map[dia]=(map[dia]||0)+1;
-  });
+  d.forEach(x=>{const dt=x['Data/Hora'];if(!dt)return;const dia=String(dt).substring(0,10);map[dia]=(map[dia]||0)+1});
   const labels=Object.keys(map).sort();
-  const vals=labels.map(l=>map[l]);
   const ctx=document.getElementById('ch-linha').getContext('2d');
-  charts['linha']=new Chart(ctx,{
-    type:'line',
-    data:{
-      labels:labels.map(l=>{const p=l.split('-');return p[2]+'/'+p[1]}),
-      datasets:[{label:'Respostas',data:vals,borderColor:AZUL,backgroundColor:'rgba(26,40,72,0.07)',borderWidth:2,pointRadius:4,pointBackgroundColor:AZUL,tension:.3,fill:true}]
-    },
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-      scales:{x:{grid:{display:false},ticks:{font:{size:11},color:'#5a6482'}},
-              y:{grid:{color:'#e2e6f0'},ticks:{font:{size:11},color:'#5a6482'},beginAtZero:true,precision:0}}}
-  });
+  charts['linha']=new Chart(ctx,{type:'line',data:{labels:labels.map(l=>{const p=l.split('-');return p[2]+'/'+p[1]}),datasets:[{label:'Respostas',data:labels.map(l=>map[l]),borderColor:AZUL,backgroundColor:'rgba(26,40,72,0.07)',borderWidth:2,pointRadius:4,pointBackgroundColor:AZUL,tension:.3,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:11},color:'#5a6482'}},y:{grid:{color:'#e2e6f0'},ticks:{font:{size:11},color:'#5a6482'},beginAtZero:true,precision:0}}}});
 }
 
 function renderVend(d){
   const map={};
-  d.forEach(x=>{
-    const v=x['Vendedor'], n=+x['Nota (1-5)'];
-    if(!v) return;
-    if(!map[v]) map[v]={s:0,c:0,tot:0};
-    map[v].tot++;
-    if(n){map[v].s+=n; map[v].c++}
-  });
+  d.forEach(x=>{const v=x['Vendedor'],n=+x['Nota (1-5)'];if(!v)return;if(!map[v])map[v]={s:0,c:0,tot:0};map[v].tot++;if(n){map[v].s+=n;map[v].c++}});
   const sorted=Object.entries(map).map(([v,s])=>({nome:v,tot:s.tot,media:s.c?s.s/s.c:0})).sort((a,b)=>b.media-a.media);
   const max=Math.max(...sorted.map(v=>v.media),5);
-  document.getElementById('tab-vend').innerHTML=`
-    <table class="vt">
-      <thead><tr><th>Vendedor</th><th>Atend.</th><th>Média</th><th>Desempenho</th></tr></thead>
-      <tbody>${sorted.map(v=>`
-        <tr>
-          <td><strong>${v.nome}</strong></td>
-          <td>${v.tot}</td>
-          <td>${v.media?v.media.toFixed(1)+'★':'—'}</td>
-          <td><div class="bar-w"><div class="bar-bg"><div class="bar-f" style="width:${(v.media/max*100).toFixed(0)}%"></div></div></div></td>
-        </tr>`).join('')}
-      </tbody>
-    </table>`;
+  document.getElementById('tab-vend').innerHTML=`<table class="vt"><thead><tr><th>Vendedor</th><th>Atend.</th><th>Média</th><th>Desempenho</th></tr></thead><tbody>${sorted.map(v=>`<tr><td><strong>${v.nome}</strong></td><td>${v.tot}</td><td>${v.media?v.media.toFixed(1)+'★':'—'}</td><td><div class="bar-w"><div class="bar-bg"><div class="bar-f" style="width:${(v.media/max*100).toFixed(0)}%"></div></div></div></td></tr>`).join('')}</tbody></table>`;
 }
 
 function renderDona(id,d,campo){
   destroyChart(id);
   const map={};
-  d.forEach(x=>{if(x[campo]) map[x[campo]]=(map[x[campo]]||0)+1});
+  d.forEach(x=>{if(x[campo])map[x[campo]]=(map[x[campo]]||0)+1});
   const entries=Object.entries(map).sort((a,b)=>b[1]-a[1]);
   const ctx=document.getElementById(id).getContext('2d');
-  charts[id]=new Chart(ctx,{
-    type:'doughnut',
-    data:{labels:entries.map(e=>e[0]),datasets:[{data:entries.map(e=>e[1]),backgroundColor:CORES,borderWidth:0}]},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{position:'bottom',labels:{font:{size:11},color:'#1a2340',padding:8,boxWidth:12}}}}
-  });
+  charts[id]=new Chart(ctx,{type:'doughnut',data:{labels:entries.map(e=>e[0]),datasets:[{data:entries.map(e=>e[1]),backgroundColor:CORES,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11},color:'#1a2340',padding:8,boxWidth:12}}}}});
 }
 
 function renderNotas(d){
   destroyChart('notas');
   const map={1:0,2:0,3:0,4:0,5:0};
-  d.forEach(x=>{const n=+x['Nota (1-5)']; if(n>=1&&n<=5) map[n]++});
+  d.forEach(x=>{const n=+x['Nota (1-5)'];if(n>=1&&n<=5)map[n]++});
   const ctx=document.getElementById('ch-notas').getContext('2d');
-  charts['notas']=new Chart(ctx,{
-    type:'bar',
-    data:{
-      labels:['1★','2★','3★','4★','5★'],
-      datasets:[{data:[map[1],map[2],map[3],map[4],map[5]],
-        backgroundColor:['#e74c3c','#e67e22','#f1c40f','#27ae60','#1a2848'],borderRadius:6,borderWidth:0}]
-    },
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-      scales:{x:{grid:{display:false},ticks:{font:{size:13},color:'#1a2340'}},
-              y:{grid:{color:'#e2e6f0'},ticks:{font:{size:11},color:'#5a6482'},beginAtZero:true,precision:0}}}
+  charts['notas']=new Chart(ctx,{type:'bar',data:{labels:['1★','2★','3★','4★','5★'],datasets:[{data:[map[1],map[2],map[3],map[4],map[5]],backgroundColor:['#e74c3c','#e67e22','#f1c40f','#27ae60','#1a2848'],borderRadius:6,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:13},color:'#1a2340'}},y:{grid:{color:'#e2e6f0'},ticks:{font:{size:11},color:'#5a6482'},beginAtZero:true,precision:0}}}});
+}
+
+function renderComentarios(){
+  const d=filtrar();
+  const tipoFiltro=document.getElementById('cm-tipo').value;
+  const notaFiltro=document.getElementById('cm-nota-f').value;
+  const TIPOS={cm1:'Produto',cm3:'Avaliação',cm4:'Vendedor'};
+  let lista=[];
+  d.forEach(row=>{
+    const campos=tipoFiltro?[tipoFiltro]:['cm1','cm3','cm4'];
+    campos.forEach(campo=>{
+      const txt=(row[campo]||'').trim();
+      if(!txt) return;
+      const n=row['Nota (1-5)'];
+      if(notaFiltro==='baixa'&&n>2) return;
+      if(notaFiltro==='alta'&&n<4) return;
+      lista.push({texto:txt,tipo:TIPOS[campo],campo,nota:n,vendedor:row['Vendedor'],data:row['Data/Hora']});
+    });
   });
+  lista.sort((a,b)=>new Date(b.data)-new Date(a.data));
+  document.getElementById('cm-count').textContent=`${lista.length} comentário${lista.length!==1?'s':''}`;
+  if(!lista.length){
+    document.getElementById('cm-lista').innerHTML='<div class="cm-vazio">Nenhum comentário encontrado para os filtros selecionados.</div>';
+    return;
+  }
+  document.getElementById('cm-lista').innerHTML=lista.map(c=>{
+    const n=c.nota;
+    const cls=n>=4?'nota-alta':n<=2&&n>0?'nota-baixa':'';
+    const notaCls=n?`n${n}`:'';
+    let dataFmt='';
+    if(c.data){const dt=new Date(c.data);dataFmt=dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+dt.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}
+    return `<div class="cm-card ${cls}"><div class="cm-meta">${n?`<span class="cm-nota ${notaCls}">${n}★</span>`:''}<span class="cm-tipo">${c.tipo}</span>${c.vendedor?`<span class="cm-vend">${c.vendedor}</span>`:''}<span class="cm-data">${dataFmt}</span></div><div class="cm-txt">${c.texto}</div></div>`;
+  }).join('');
 }
 
 carregar();
