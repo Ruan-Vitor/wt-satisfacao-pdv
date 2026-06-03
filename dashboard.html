@@ -98,6 +98,7 @@ main{padding:24px 32px;max-width:1400px;margin:0 auto}
 .cm-data{font-size:11px;color:var(--texto2);margin-left:auto}
 .cm-tipo{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--texto2);background:var(--cinza2);padding:2px 7px;border-radius:10px}
 .cm-txt{font-size:13px;color:var(--texto);line-height:1.5}
+.cm-contato{display:inline-block;margin-top:6px;font-size:12px;color:var(--azul2);font-weight:600;background:var(--cinza);padding:3px 9px;border-radius:20px}
 .cm-vazio{text-align:center;color:var(--texto2);padding:40px;font-size:14px}
 
 #overlay{position:fixed;inset:0;background:var(--azul);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;transition:opacity .4s}
@@ -170,6 +171,7 @@ main{padding:24px 32px;max-width:1400px;margin:0 auto}
         <select id="cm-tipo" onchange="renderComentarios()">
           <option value="">Todos os comentários</option>
           <option value="cm1">Produto</option>
+          <option value="cm2">Perfil</option>
           <option value="cm3">Avaliação</option>
           <option value="cm4">Vendedor</option>
         </select>
@@ -257,6 +259,7 @@ async function carregar(){
           'Contato':       fbVal(f.contato),
           'Vendedor':      fbVal(f.vendedor),
           'cm1':           fbVal(f.cm1),
+          'cm2':           fbVal(f.cm2),
           'cm3':           fbVal(f.cm3),
           'cm4':           fbVal(f.cm4),
         };
@@ -376,17 +379,17 @@ function renderComentarios(){
   const d=filtrar();
   const tipoFiltro=document.getElementById('cm-tipo').value;
   const notaFiltro=document.getElementById('cm-nota-f').value;
-  const TIPOS={cm1:'Produto',cm3:'Avaliação',cm4:'Vendedor'};
+  const TIPOS={cm1:'Produto',cm2:'Perfil',cm3:'Avaliação',cm4:'Vendedor'};
   let lista=[];
   d.forEach(row=>{
-    const campos=tipoFiltro?[tipoFiltro]:['cm1','cm3','cm4'];
+    const campos=tipoFiltro?[tipoFiltro]:['cm1','cm2','cm3','cm4'];
     campos.forEach(campo=>{
       const txt=(row[campo]||'').trim();
       if(!txt) return;
       const n=row['Nota (1-5)'];
       if(notaFiltro==='baixa'&&n>2) return;
       if(notaFiltro==='alta'&&n<4) return;
-      lista.push({texto:txt,tipo:TIPOS[campo],campo,nota:n,vendedor:row['Vendedor'],data:row['Data/Hora']});
+      lista.push({texto:txt,tipo:TIPOS[campo],campo,nota:n,vendedor:row['Vendedor'],data:row['Data/Hora'],contato:row['Contato']||''});
     });
   });
   lista.sort((a,b)=>new Date(b.data)-new Date(a.data));
@@ -401,7 +404,8 @@ function renderComentarios(){
     const notaCls=n?`n${n}`:'';
     let dataFmt='';
     if(c.data){const dt=new Date(c.data);dataFmt=dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+dt.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}
-    return `<div class="cm-card ${cls}"><div class="cm-meta">${n?`<span class="cm-nota ${notaCls}">${n}★</span>`:''}<span class="cm-tipo">${c.tipo}</span>${c.vendedor?`<span class="cm-vend">${c.vendedor}</span>`:''}<span class="cm-data">${dataFmt}</span></div><div class="cm-txt">${c.texto}</div></div>`;
+    const contatoHtml = c.contato ? `<span class="cm-contato">📞 ${c.contato}</span>` : '';
+    return `<div class="cm-card ${cls}"><div class="cm-meta">${n?`<span class="cm-nota ${notaCls}">${n}★</span>`:''}<span class="cm-tipo">${c.tipo}</span>${c.vendedor?`<span class="cm-vend">${c.vendedor}</span>`:''}<span class="cm-data">${dataFmt}</span></div><div class="cm-txt">${c.texto}</div>${contatoHtml}</div>`;
   }).join('');
 }
 
@@ -409,4 +413,3 @@ carregar();
 </script>
 </body>
 </html>
-
