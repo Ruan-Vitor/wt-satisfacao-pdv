@@ -219,23 +219,23 @@ html, body {
   background: #ffffff;
   border-radius: var(--radius);
   padding: 22px 18px;
-  box-shadow: 0 8px 40px rgba(26,40,72,0.35);
+  box-shadow: 0 8px 40px rgba(26,40,72,0.32);
   margin-bottom: 10px;
   isolation: isolate;
 }
 .ttl {
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 21px; font-weight: 800;
-  color: #1a2848; text-transform: uppercase;
+  color: var(--azul); text-transform: uppercase;
   letter-spacing: .4px; margin-bottom: 2px;
 }
-.sub { font-size: 12px; color: #555; margin-bottom: 18px; }
+.sub { font-size: 12px; color: #444; font-weight: 500; margin-bottom: 18px; }
 
 /* ── LABEL ──────────────────────────────────────────────── */
 .lbl {
   display: block;
   font-size: 11px; font-weight: 700;
-  color: #1a2848; text-transform: uppercase;
+  color: var(--azul); text-transform: uppercase;
   letter-spacing: 1px; margin-bottom: 9px;
 }
 
@@ -244,8 +244,8 @@ html, body {
 .chip {
   padding: 7px 13px;
   border-radius: 50px;
-  border: 2px solid var(--cinza2);
-  background: var(--cinza);
+  border: 2px solid #b0b6d0;
+  background: #e8eaf4;
   font-size: 12.5px; font-weight: 600;
   color: #1a2848;
   cursor: pointer;
@@ -339,7 +339,7 @@ html, body {
 }
 .star {
   font-size: 44px; cursor: pointer;
-  color: var(--cinza2);
+  color: #b0b6d0;
   transition: color .13s, transform .13s;
   user-select: none; line-height: 1;
 }
@@ -383,8 +383,8 @@ html, body {
   text-align: center; cursor: pointer;
   transition: all .18s; user-select: none;
 }
-.vchip .vn { font-family:'Barlow Condensed',sans-serif; font-size:9px; font-weight:700; color:#5a6080; text-transform:uppercase; letter-spacing:1px; display:block; margin-bottom:2px; }
-.vchip .vnm { font-size:14px; font-weight:700; color:#1a2848; }
+.vchip .vn { font-family:'Barlow Condensed',sans-serif; font-size:9px; font-weight:700; color:#8a8faa; text-transform:uppercase; letter-spacing:1px; display:block; margin-bottom:2px; }
+.vchip .vnm { font-size:14px; font-weight:600; color:var(--azul); }
 .vchip.sel { background:var(--azul); border-color:var(--azul); }
 .vchip.sel .vn { color:rgba(232,200,74,.55); }
 .vchip.sel .vnm { color:var(--dourado); }
@@ -433,7 +433,7 @@ html, body {
 
 /* ── SEPARADOR COMENTÁRIO ───────────────────────────────── */
 .sep { border:none; border-top:1.5px dashed var(--cinza2); margin:14px 0 12px; }
-.cm-lbl { font-size:11px; color:#555; font-weight:700; text-transform:uppercase; letter-spacing:.8px; margin-bottom:7px; display:block; }
+.cm-lbl { font-size:11px; color:#888; font-weight:600; text-transform:uppercase; letter-spacing:.8px; margin-bottom:7px; display:block; }
 
 /* ── NAV ────────────────────────────────────────────────── */
 #nav { padding:12px 14px 18px; display:flex; gap:9px; flex-shrink:0; }
@@ -535,79 +535,46 @@ html, body {
 }
 @keyframes giro { to{transform:rotate(360deg)} }
 
-/* ═══════════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════
    RESPONSIVIDADE TABLET — 600px+
-   Expande o layout para aproveitar telas maiores sem quebrar
-   nada no mobile.
-   ═══════════════════════════════════════════════════════════ */
-
+   ═══════════════════════════════════════════ */
 @media (min-width: 600px) {
-  /* App ocupa mais espaço horizontal */
-  #app {
-    max-width: 700px;
-  }
-
-  /* Tela de boas-vindas: logo maior, texto maior */
-  #t0 .wlogo { height: 80px; margin-bottom: 28px; }
-  #t0 h1 { font-size: 42px; }
-  #t0 p  { font-size: 16px; max-width: 380px; }
-  #t0 .tm { font-size: 13px; margin-bottom: 36px; }
-  #bcomecar { font-size: 22px; padding: 18px; max-width: 320px; }
-
-  /* Cards com mais padding */
-  .card { padding: 30px 26px; margin-bottom: 14px; }
-  .ttl  { font-size: 26px; }
-  .sub  { font-size: 14px; margin-bottom: 22px; }
-
-  /* Chips maiores e mais espaçados */
-  .chip { padding: 9px 17px; font-size: 14px; }
-  .chips { gap: 9px; margin-bottom: 20px; }
-
-  /* Bloco produto */
-  .prod-blk { padding: 16px; margin-bottom: 12px; }
-
-  /* Estrelas maiores */
-  .star { font-size: 56px; }
-  .slbl { font-size: 18px; }
-
-  /* Grid de vendedores: 3 colunas em tablet */
-  .vgrid { grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-  .vchip { padding: 16px 10px; border-radius: 12px; }
-  .vchip .vn  { font-size: 10px; }
-  .vchip .vnm { font-size: 16px; }
-
-  /* Inputs maiores */
-  .inp { padding: 12px 15px; font-size: 15px; }
-  .inp.cm { min-height: 80px; }
-
-  /* Nav mais alto */
-  #nav { padding: 14px 18px 24px; gap: 12px; }
-  #bprev { flex: 0 0 56px; height: 58px; font-size: 26px; }
-  #bnext { height: 58px; font-size: 20px; }
-
-  /* Header */
+  #app { max-width: 680px; }
   #hdr img { height: 42px; }
   #hdr .loja { font-size: 13px; letter-spacing: 2.5px; }
-
-  /* Labels */
+  #t0 .wlogo { height: 80px; margin-bottom: 28px; }
+  #t0 h1 { font-size: 40px; }
+  #t0 p { font-size: 16px; max-width: 360px; }
+  #t0 .tm { font-size: 13px; margin-bottom: 34px; }
+  #bcomecar { font-size: 21px; padding: 17px; max-width: 300px; }
+  .card { padding: 28px 24px; margin-bottom: 14px; }
+  .ttl { font-size: 26px; }
+  .sub { font-size: 14px; margin-bottom: 22px; }
   .lbl { font-size: 12px; margin-bottom: 11px; }
-  .cm-lbl { font-size: 12px; }
-
-  /* Faixa de preço: 2x2 em tablet */
-  #cpreco { flex-wrap: wrap; }
-  #cpreco .chip.preco { min-width: calc(50% - 10px); text-align: center; flex: 1 1 calc(50% - 10px); }
-
-  /* Marca d'água maior em tablet */
-  #wm img { width: min(60vw, 480px); }
-
-  /* Tela obrigado */
-  .ico { font-size: 80px; }
-  #tobg h2 { font-size: 36px; }
-  #tobg p  { font-size: 16px; max-width: 340px; }
+  .chip { padding: 9px 17px; font-size: 14px; }
+  .chips { gap: 9px; margin-bottom: 20px; }
+  .prod-blk { padding: 16px; margin-bottom: 12px; }
+  .btn-add { font-size: 14px; padding: 13px; margin-bottom: 20px; }
+  .star { font-size: 56px; }
+  .slbl { font-size: 18px; }
+  .vgrid { grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .vchip { padding: 16px 10px; border-radius: 12px; }
+  .vchip .vn { font-size: 10px; }
+  .vchip .vnm { font-size: 16px; }
+  .inp { padding: 12px 15px; font-size: 15px; }
+  .inp.cm { min-height: 80px; }
+  #nav { padding: 14px 18px 24px; gap: 12px; }
+  #bprev { flex: 0 0 56px; height: 58px; font-size: 26px; }
+  #bnext { height: 58px; font-size: 19px; }
+  #wm img { width: min(55vw, 460px); }
+  .ico { font-size: 78px; }
+  #tobg h2 { font-size: 34px; }
+  #tobg p { font-size: 16px; max-width: 320px; }
   #bnova { font-size: 17px; padding: 14px 36px; }
+  #pger { padding: 22px; }
+  .grow input { font-size: 14px; padding: 9px 11px; }
+  .gbtn { font-size: 15px; padding: 12px; }
 }
-
-
 
 </style>
 </head>
@@ -698,40 +665,11 @@ html, body {
       </div>
     </div>
 
-    <!-- TELA 3: AVALIAÇÃO -->
+    <!-- TELA 3: VENDEDOR -->
     <div id="t3" class="scr">
       <div class="card">
-        <div class="ttl">⭐ Atendimento</div>
-        <div class="sub">Tela 3 de 4 &nbsp;·&nbsp; Opcional</div>
-
-        <p style="font-size:13.5px;color:#666;text-align:center">Como você avalia o atendimento do nosso vendedor?</p>
-
-        <div class="stars">
-          <span class="star" data-v="1" onclick="estrela(1)">★</span>
-          <span class="star" data-v="2" onclick="estrela(2)">★</span>
-          <span class="star" data-v="3" onclick="estrela(3)">★</span>
-          <span class="star" data-v="4" onclick="estrela(4)">★</span>
-          <span class="star" data-v="5" onclick="estrela(5)">★</span>
-        </div>
-        <div class="slbl" id="slbl"></div>
-
-        <div id="ct-wrap">
-          <div class="ct-lbl">😟 Lamentamos! Podemos entrar em contato para resolver?</div>
-          <input type="text" class="inp" id="ctinp"
-                 placeholder="WhatsApp ou email (opcional)" style="margin-bottom:0">
-        </div>
-
-        <hr class="sep">
-        <span class="cm-lbl">💬 Quer nos contar mais?</span>
-        <textarea class="inp cm" id="cm3" placeholder="Opcional…"></textarea>
-      </div>
-    </div>
-
-    <!-- TELA 4: VENDEDOR -->
-    <div id="t4" class="scr">
-      <div class="card">
         <div class="ttl">🏷️ Quem te atendeu?</div>
-        <div class="sub">Tela 4 de 4 &nbsp;·&nbsp; Opcional</div>
+        <div class="sub">Tela 3 de 4 &nbsp;·&nbsp; Opcional</div>
 
         <div class="vgrid" id="vgrid">
           <div style="grid-column:1/-1;text-align:center;color:#bbb;font-size:12px;padding:10px">Carregando vendedores…</div>
@@ -766,6 +704,35 @@ html, body {
             </div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- TELA 4: AVALIAÇÃO -->
+    <div id="t4" class="scr">
+      <div class="card">
+        <div class="ttl">⭐ Atendimento</div>
+        <div class="sub">Tela 4 de 4 &nbsp;·&nbsp; Opcional</div>
+
+        <p style="font-size:13.5px;color:#333;text-align:center;font-weight:500">Como você avalia o atendimento do nosso vendedor?</p>
+
+        <div class="stars">
+          <span class="star" data-v="1" onclick="estrela(1)">★</span>
+          <span class="star" data-v="2" onclick="estrela(2)">★</span>
+          <span class="star" data-v="3" onclick="estrela(3)">★</span>
+          <span class="star" data-v="4" onclick="estrela(4)">★</span>
+          <span class="star" data-v="5" onclick="estrela(5)">★</span>
+        </div>
+        <div class="slbl" id="slbl"></div>
+
+        <div id="ct-wrap">
+          <div class="ct-lbl">😟 Lamentamos! Podemos entrar em contato para resolver?</div>
+          <input type="text" class="inp" id="ctinp"
+                 placeholder="WhatsApp ou email (opcional)" style="margin-bottom:0">
+        </div>
+
+        <hr class="sep">
+        <span class="cm-lbl">💬 Quer nos contar mais?</span>
+        <textarea class="inp cm" id="cm3" placeholder="Opcional…"></textarea>
       </div>
     </div>
 
@@ -1008,55 +975,42 @@ function coletar() {
   };
 }
 
+// ── ENVIO FIREBASE ─────────────────────────────────────────
 // ── EMAILJS — ALERTA EM TEMPO REAL ─────────────────────────
-// CONFIGURAÇÃO: após criar conta em emailjs.com, preencha:
-const EMAILJS_PUBLIC_KEY  = "COLE_SUA_PUBLIC_KEY_AQUI";
-const EMAILJS_SERVICE_ID  = "COLE_SEU_SERVICE_ID_AQUI";
-const EMAILJS_TEMPLATE_ID = "COLE_SEU_TEMPLATE_ID_AQUI";
+const EMAILJS_PUBLIC_KEY  = "KPUxsYlwoKvFS4zwX";
+const EMAILJS_SERVICE_ID  = "service_hfjaudl";
+const EMAILJS_TEMPLATE_ID = "mdfjme";
 
-// Inicializa EmailJS (só executa se as chaves estiverem preenchidas)
-if (EMAILJS_PUBLIC_KEY !== "COLE_SUA_PUBLIC_KEY_AQUI") {
-  emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
-}
+emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 
 async function enviarAlertaNotaBaixa(dados) {
-  // Só dispara se as chaves estiverem configuradas
-  if (EMAILJS_PUBLIC_KEY === "COLE_SUA_PUBLIC_KEY_AQUI") return;
-
   const agora = new Date().toLocaleString("pt-BR", {
     day: "2-digit", month: "2-digit", year: "numeric",
     hour: "2-digit", minute: "2-digit"
   });
-
   try {
     await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-      nota:      dados.nota,
-      vendedor:  dados.vendedor || "Não informado",
-      contato:   dados.contato  || "Não informado",
-      marca:     dados.marcas   || "Não informada",
+      nota:       dados.nota,
+      vendedor:   dados.vendedor  || "Não informado",
+      contato:    dados.contato   || "Não informado",
+      marca:      dados.marcas    || "Não informada",
       comentario: dados.cm3 || dados.cm4 || "—",
-      data_hora: agora,
+      data_hora:  agora,
     });
-    console.log("✅ Alerta de nota baixa enviado por e-mail.");
+    console.log("✅ Alerta EmailJS enviado.");
   } catch(err) {
-    console.warn("⚠️ Falha ao enviar alerta EmailJS:", err);
-    // Falha silenciosa — não impede o formulário de funcionar
+    console.warn("⚠️ Falha EmailJS (silenciosa):", err);
   }
 }
 
-// ── ENVIO FIREBASE ─────────────────────────────────────────
 async function enviar() {
   const dados = coletar();
 
-  // Não salvar se não tiver nenhuma informação útil
   const temDados = dados.nota || dados.produtos.length > 0 ||
     dados.faixa_etaria || dados.sexo || dados.vendedor ||
     dados.cm1 || dados.cm2 || dados.cm3 || dados.cm4 || dados.contato;
 
-  if (!temDados) {
-    obrigado();
-    return;
-  }
+  if (!temDados) { obrigado(); return; }
 
   const ov = document.getElementById("ov");
   ov.classList.add("on");
@@ -1069,15 +1023,14 @@ async function enviar() {
       throw new Error("Firebase offline");
     }
 
-    // ── ALERTA EM TEMPO REAL: dispara imediatamente se nota ≤ 2 ──
+    // Alerta imediato se nota baixa
     if (dados.nota && dados.nota <= 2) {
-      enviarAlertaNotaBaixa(dados); // não aguarda — não bloqueia o fluxo
+      enviarAlertaNotaBaixa(dados);
     }
 
     obrigado();
   } catch(err) {
     console.error("Erro Firebase:", err);
-    // Salva localmente como fallback
     const fila = JSON.parse(localStorage.getItem("wt_fila") || "[]");
     fila.push(dados);
     localStorage.setItem("wt_fila", JSON.stringify(fila));
