@@ -1,8 +1,8 @@
 # 🎽 WT Satisfação PDV — Guia Completo
-## GitHub + Vercel + Firebase + Sheets + Looker Studio · Versão 4.0
+## GitHub + Vercel + Firebase + Sheets + Dashboard · Versão 5.0
 
-> Este guia documenta tudo que foi feito e o que ainda falta.
-> Etapas marcadas com ✅ já estão concluídas.
+> Este guia documenta tudo que foi feito no projeto.
+> Todas as etapas estão concluídas ✅
 
 ---
 
@@ -15,9 +15,9 @@
 | GitHub | ✅ Configurado | push.py funcionando |
 | Sheets — sincronização | ✅ Automática a cada 30min | SincronizarFirebase.gs v5.0 |
 | Sheets — menu WT Admin | ✅ Ativo | Apagar por linha ou por data |
-| Alerta nota baixa (≤2) | ✅ No script | Vai junto na sincronização |
-| **Alerta em tempo real** | ⏳ A fazer | Ainda tem delay de 30min |
-| **Looker Studio** | ⏳ A fazer | Próxima etapa |
+| Alerta nota baixa (≤2) | ✅ Tempo real | EmailJS — chega em segundos |
+| Relatório diário 22h | ✅ Ativo | Apps Script — 0% de erros |
+| Dashboard | ✅ No ar | wt-satisfacao-pdv.vercel.app/dashboard.html |
 
 ---
 
@@ -87,13 +87,11 @@ O Vercel detecta o push e atualiza em ~30 segundos.
 | `appsscript.json` | Escopos OAuth (datastore, spreadsheets, gmail, scriptapp) |
 | `SincronizarFirebase.gs` | Sincroniza Firebase → Sheets a cada 30min |
 | `PainelAdmin.gs` | Menu "WT Admin" para apagar respostas |
-| `AtualizarFormularioWT.gs` | Script antigo para Google Forms (pode ignorar) |
 
 **Como funciona a sincronização:**
 - Roda automaticamente a cada 30 minutos
 - Apaga respostas vazias do Firebase
 - Adiciona apenas registros novos na planilha (não duplica)
-- Envia e-mail de alerta para `ruanvn1@gmail.com` quando nota ≤ 2
 - Envia relatório diário às 22h com total e média por vendedor
 
 **Como forçar sincronização agora (sem esperar 30min):**
@@ -101,7 +99,7 @@ O Vercel detecta o push e atualiza em ~30 segundos.
 2. Ou acesse Apps Script → selecione `sincronizar` → Executar
 
 **Menu WT Admin na planilha:**
-- `Apagar linhas selecionadas` — selecione as linhas e use este menu; apaga da planilha e do Firebase ao mesmo tempo
+- `Apagar linhas selecionadas` — apaga da planilha e do Firebase ao mesmo tempo
 - `Apagar por data (testes)` — abre painel lateral, escolha a data, apaga tudo daquele dia
 - `Sincronizar agora` — força sincronização imediata sem esperar 30min
 
@@ -126,53 +124,29 @@ O Vercel detecta o push e atualiza em ~30 segundos.
 
 ---
 
-## ETAPA 5 — Alerta em tempo real ⏳ A FAZER
+## ETAPA 5 — Alerta em tempo real ✅ CONCLUÍDA
 
-**Problema atual:** o alerta de nota baixa (≤ 2) só chega quando a sincronização de 30 em 30 minutos roda — pode demorar até 30 minutos após o cliente enviar.
+**Como funciona:**
+- Quando o cliente envia nota ≤ 2, o formulário dispara um e-mail imediatamente via EmailJS
+- O alerta chega em segundos para `ruanvn1@gmail.com`, independente da sincronização do Sheets
 
-**Solução:** enviar o e-mail de alerta direto do formulário (`index.html`) no momento do envio, sem passar pelo Sheets.
+**Credenciais EmailJS:**
+```
+Public Key:  KPUxsYlwoKvFS4zwX
+Service ID:  service_jr39shd
+Template ID: template_8jwqvwn
+```
 
-**Como implementar:**
-1. Criar um endpoint gratuito no [EmailJS](https://www.emailjs.com) ou [Formspree](https://formspree.io)
-2. No `index.html`, na função `enviar()`, após salvar no Firebase, verificar se `nota <= 2` e disparar o e-mail via API
-3. O alerta chega em segundos, independente da sincronização do Sheets
-
-> Isso não afeta o relatório diário — ele continua funcionando normalmente via Apps Script.
+**Campos do e-mail de alerta:**
+- Nota, Vendedor, Contato, Marca, Comentário, Data/Hora
 
 ---
 
-## ETAPA 6 — Looker Studio ⏳ A FAZER
+## ETAPA 6 — Dashboard ✅ CONCLUÍDA
 
-**Pré-requisito:** a planilha "Respostas WT Teresina Shopping" com dados reais (já temos 65 respostas de teste).
+**Acesso:** `https://wt-satisfacao-pdv.vercel.app/dashboard.html`
 
-**Como criar o dashboard:**
-
-1. Acesse [lookerstudio.google.com](https://lookerstudio.google.com)
-2. Clique em **"Em branco"** para criar um novo relatório
-3. **Conectar fonte de dados:**
-   - Clique em "Adicionar dados" → "Google Sheets"
-   - Selecione a planilha "Respostas WT Teresina Shopping"
-   - Selecione a aba **"Respostas"**
-   - Clique em **"Adicionar"**
-
-**Gráficos recomendados para o dashboard:**
-
-| Gráfico | Dimensão | Métrica | Insight |
-|---|---|---|---|
-| Scorecard | — | COUNT(Firebase ID) | Total de respostas |
-| Scorecard | — | AVG(Nota 1-5) | Média geral |
-| Gráfico de barras | Vendedor | AVG(Nota 1-5) | Ranking de vendedores |
-| Gráfico de pizza | Marcas | COUNT | Marcas mais vendidas |
-| Gráfico de barras | Faixa Etária | COUNT | Perfil dos clientes |
-| Gráfico de linha | Data/Hora (por dia) | COUNT | Volume ao longo do tempo |
-| Gráfico de pizza | Sexo | COUNT | Distribuição por sexo |
-| Gráfico de pizza | Faixa de Preço | COUNT | Ticket dos clientes |
-| Tabela | Vendedor | COUNT, AVG(Nota) | Tabela de performance |
-
-**Filtros recomendados:**
-- Seletor de intervalo de datas (Data/Hora)
-- Seletor de vendedor
-- Seletor de marca
+O dashboard lê os dados direto do Firebase em tempo real e exibe gráficos e indicadores de desempenho da loja, substituindo o Looker Studio.
 
 ---
 
@@ -187,9 +161,10 @@ O Vercel detecta o push e atualiza em ~30 segundos.
 | Apagar dia de testes | Planilha → WT Admin → Apagar por data (testes) |
 | Inserir dados de teste | `python inserir_testes.py` no VSCode |
 | Ver respostas brutas | console.firebase.google.com → Firestore → respostas |
-| Ver dashboard | Looker Studio (link a definir) |
+| Ver dashboard | wt-satisfacao-pdv.vercel.app/dashboard.html |
 | Relatório diário | Chega por e-mail todo dia às 22h automaticamente |
-| Alerta nota baixa | Chega por e-mail na sincronização (a cada 30min — melhoria planejada) |
+| Alerta nota baixa | Chega por e-mail em segundos via EmailJS |
+| Verificar acionadores | Apps Script → ícone de relógio ⏰ |
 
 ---
 
@@ -197,7 +172,8 @@ O Vercel detecta o push e atualiza em ~30 segundos.
 
 | Arquivo | O que faz |
 |---|---|
-| `index.html` | Formulário completo (4 telas + Firebase integrado) |
+| `index.html` | Formulário completo (5 telas + Firebase + EmailJS integrados) |
+| `dashboard.html` | Dashboard de indicadores com gráficos em tempo real |
 | `push.py` | Envia alterações para o GitHub (atualiza o site) |
 | `setup_github.py` | Configuração inicial do repositório (já usado) |
 | `inserir_testes.py` | Insere 40 respostas de teste no Firebase |
@@ -208,5 +184,5 @@ O Vercel detecta o push e atualiza em ~30 segundos.
 
 ---
 
-*WT Satisfação PDV v4.0 — World Tennis Teresina Shopping*
-*Última atualização: Maio 2026*
+*WT Satisfação PDV v5.0 — World Tennis Teresina Shopping*
+*Última atualização: Junho 2026*
