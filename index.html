@@ -533,6 +533,81 @@ html, body {
   animation:giro .8s linear infinite;
 }
 @keyframes giro { to{transform:rotate(360deg)} }
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVIDADE TABLET — 600px+
+   Expande o layout para aproveitar telas maiores sem quebrar
+   nada no mobile.
+   ═══════════════════════════════════════════════════════════ */
+
+@media (min-width: 600px) {
+  /* App ocupa mais espaço horizontal */
+  #app {
+    max-width: 700px;
+  }
+
+  /* Tela de boas-vindas: logo maior, texto maior */
+  #t0 .wlogo { height: 80px; margin-bottom: 28px; }
+  #t0 h1 { font-size: 42px; }
+  #t0 p  { font-size: 16px; max-width: 380px; }
+  #t0 .tm { font-size: 13px; margin-bottom: 36px; }
+  #bcomecar { font-size: 22px; padding: 18px; max-width: 320px; }
+
+  /* Cards com mais padding */
+  .card { padding: 30px 26px; margin-bottom: 14px; }
+  .ttl  { font-size: 26px; }
+  .sub  { font-size: 14px; margin-bottom: 22px; }
+
+  /* Chips maiores e mais espaçados */
+  .chip { padding: 9px 17px; font-size: 14px; }
+  .chips { gap: 9px; margin-bottom: 20px; }
+
+  /* Bloco produto */
+  .prod-blk { padding: 16px; margin-bottom: 12px; }
+
+  /* Estrelas maiores */
+  .star { font-size: 56px; }
+  .slbl { font-size: 18px; }
+
+  /* Grid de vendedores: 3 colunas em tablet */
+  .vgrid { grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .vchip { padding: 16px 10px; border-radius: 12px; }
+  .vchip .vn  { font-size: 10px; }
+  .vchip .vnm { font-size: 16px; }
+
+  /* Inputs maiores */
+  .inp { padding: 12px 15px; font-size: 15px; }
+  .inp.cm { min-height: 80px; }
+
+  /* Nav mais alto */
+  #nav { padding: 14px 18px 24px; gap: 12px; }
+  #bprev { flex: 0 0 56px; height: 58px; font-size: 26px; }
+  #bnext { height: 58px; font-size: 20px; }
+
+  /* Header */
+  #hdr img { height: 42px; }
+  #hdr .loja { font-size: 13px; letter-spacing: 2.5px; }
+
+  /* Labels */
+  .lbl { font-size: 12px; margin-bottom: 11px; }
+  .cm-lbl { font-size: 12px; }
+
+  /* Faixa de preço: 2x2 em tablet */
+  #cpreco { flex-wrap: wrap; }
+  #cpreco .chip.preco { min-width: calc(50% - 10px); text-align: center; flex: 1 1 calc(50% - 10px); }
+
+  /* Marca d'água maior em tablet */
+  #wm img { width: min(60vw, 480px); }
+
+  /* Tela obrigado */
+  .ico { font-size: 80px; }
+  #tobg h2 { font-size: 36px; }
+  #tobg p  { font-size: 16px; max-width: 340px; }
+  #bnova { font-size: 17px; padding: 14px 36px; }
+}
+
+
+
 </style>
 </head>
 <body>
