@@ -667,7 +667,7 @@ html, body {
     <div id="t3" class="scr">
       <div class="card">
         <div class="ttl">🏷️ Quem te atendeu?</div>
-        <div class="sub">Tela 2 de 4 &nbsp;·&nbsp; Opcional</div>
+        <div class="sub">Tela 1 de 4 &nbsp;·&nbsp; Opcional</div>
 
         <div class="vgrid" id="vgrid">
           <div style="grid-column:1/-1;text-align:center;color:#bbb;font-size:12px;padding:10px">Carregando vendedores…</div>
@@ -709,7 +709,7 @@ html, body {
     <div id="t4" class="scr">
       <div class="card">
         <div class="ttl">⭐ Atendimento</div>
-        <div class="sub">Tela 1 de 4 &nbsp;·&nbsp; Opcional</div>
+        <div class="sub">Tela 2 de 4 &nbsp;·&nbsp; Opcional</div>
 
         <p style="font-size:13.5px;color:#333;text-align:center;font-weight:500">Como você avalia o atendimento do nosso vendedor?</p>
 
@@ -901,8 +901,8 @@ function estrela(n) {
 }
 
 // ── NAVEGAÇÃO ──────────────────────────────────────────────
-// Nova ordem: welcome → atendimento (t4) → vendedor (t3) → produto (t1) → perfil (t2)
-const ORDEM_TELAS = [0, 4, 3, 1, 2];
+// Nova ordem: welcome → vendedor (t3) → atendimento (t4) → produto (t1) → perfil (t2)
+const ORDEM_TELAS = [0, 3, 4, 1, 2];
 
 function ir(pos) {
   document.querySelectorAll(".scr").forEach(s => {
