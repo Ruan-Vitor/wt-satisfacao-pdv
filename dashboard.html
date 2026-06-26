@@ -53,6 +53,22 @@ main{padding:24px 32px;max-width:1400px;margin:0 auto}
 
 #pag-graficos{display:block}
 #pag-comentarios{display:none}
+#pag-respostas{display:none}
+.resp-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.rt{width:100%;border-collapse:collapse;font-size:12.5px;min-width:900px}
+.rt th{font-size:11px;font-weight:700;color:var(--texto2);text-transform:uppercase;letter-spacing:.7px;padding:8px 10px;border-bottom:2px solid var(--cinza2);text-align:left;white-space:nowrap;cursor:pointer;user-select:none;background:var(--cinza)}
+.rt th:hover{color:var(--azul)}
+.rt th.asc::after{content:' ↑'}.rt th.desc::after{content:' ↓'}
+.rt td{padding:8px 10px;border-bottom:1px solid var(--cinza2);color:var(--texto);white-space:nowrap}
+.rt tr:hover td{background:#f0f4ff}
+.rt tr:last-child td{border-bottom:none}
+.badge-loja{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;color:#fff;letter-spacing:.5px}
+.badge-tere{background:var(--azul)}.badge-poty{background:var(--azul3)}
+.nota-pip{display:inline-flex;gap:2px}
+.pip{width:8px;height:8px;border-radius:50%;background:var(--cinza2)}
+.pip.on{background:var(--dourado)}
+.pip.red{background:var(--red)}
+.rt-contagem{font-size:12px;color:var(--texto2);margin-bottom:10px}
 
 .scorecards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px}
 .sc{background:var(--branco);border-radius:var(--radius);padding:18px 20px;border:1px solid var(--cinza2);border-top:3px solid var(--azul)}
@@ -131,6 +147,7 @@ main{padding:24px 32px;max-width:1400px;margin:0 auto}
 <div class="abas">
   <div class="aba on" id="aba-graficos" onclick="trocarAba('graficos')">📊 Gráficos</div>
   <div class="aba" id="aba-comentarios" onclick="trocarAba('comentarios')">💬 Comentários</div>
+  <div class="aba" id="aba-respostas" onclick="trocarAba('respostas')">📋 Todas as respostas</div>
 </div>
 
 <div class="filtros">
@@ -193,6 +210,33 @@ main{padding:24px 32px;max-width:1400px;margin:0 auto}
       </div>
     </div>
   </div>
+
+  <div id="pag-respostas">
+    <div class="card">
+      <div class="card-ttl">📋 Todas as respostas</div>
+      <div class="rt-contagem" id="rt-contagem"></div>
+      <div class="resp-wrap">
+        <table class="rt" id="rt">
+          <thead>
+            <tr>
+              <th onclick="sortResp('Data/Hora')">Data/Hora</th>
+              <th onclick="sortResp('Loja')">Loja</th>
+              <th onclick="sortResp('Vendedor')">Vendedor</th>
+              <th onclick="sortResp('Nota (1-5)')">Nota</th>
+              <th onclick="sortResp('Marcas')">Marcas</th>
+              <th onclick="sortResp('Modelos')">Modelo</th>
+              <th onclick="sortResp('Faixa de Preço')">Faixa Preço</th>
+              <th onclick="sortResp('Faixa Etária')">Faixa Etária</th>
+              <th onclick="sortResp('Sexo')">Sexo</th>
+              <th>Comentários</th>
+              <th>Contato</th>
+            </tr>
+          </thead>
+          <tbody id="rt-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </main>
 
 <script>
@@ -207,9 +251,12 @@ let DADOS=[], charts={};
 function trocarAba(aba){
   document.getElementById('pag-graficos').style.display = aba==='graficos'?'block':'none';
   document.getElementById('pag-comentarios').style.display = aba==='comentarios'?'block':'none';
+  document.getElementById('pag-respostas').style.display = aba==='respostas'?'block':'none';
   document.getElementById('aba-graficos').className = 'aba'+(aba==='graficos'?' on':'');
   document.getElementById('aba-comentarios').className = 'aba'+(aba==='comentarios'?' on':'');
+  document.getElementById('aba-respostas').className = 'aba'+(aba==='respostas'?' on':'');
   if(aba==='comentarios') renderComentarios();
+  if(aba==='respostas') renderRespostas();
 }
 
 function destroyChart(id){if(charts[id]){charts[id].destroy();delete charts[id]}}
@@ -431,6 +478,57 @@ function renderComentarios(){
     const lojaHtml=`<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#fff;background:${c.loja==='POTY'?'#2f447a':'#1a2848'};padding:2px 7px;border-radius:10px">${LOJA_LABEL[c.loja]||c.loja}</span>`;
     const vendHtml=c.vendedor?`<span class="cm-vend">${c.vendedorNum?`[${c.vendedorNum}] `:``}${c.vendedor}</span>`:'';
     return `<div class="cm-card ${cls}"><div class="cm-meta">${n?`<span class="cm-nota ${notaCls}">${n}★</span>`:''}<span class="cm-tipo">${c.tipo}</span>${vendHtml}${lojaHtml}<span class="cm-data">${dataFmt}</span></div><div class="cm-txt">${c.texto}</div>${contatoHtml}</div>`;
+  }).join('');
+}
+
+
+let _sortCol = 'Data/Hora', _sortDir = -1;
+
+function sortResp(col){
+  if(_sortCol===col) _sortDir*=-1; else {_sortCol=col;_sortDir=-1;}
+  document.querySelectorAll('.rt th').forEach(th=>{th.classList.remove('asc','desc')});
+  const headers=['Data/Hora','Loja','Vendedor','Nota (1-5)','Marcas','Modelos','Faixa de Preço','Faixa Etária','Sexo'];
+  const idx=headers.indexOf(col);
+  if(idx>=0){
+    const ths=document.querySelectorAll('.rt th');
+    if(ths[idx]) ths[idx].classList.add(_sortDir===1?'asc':'desc');
+  }
+  renderRespostas();
+}
+
+function renderRespostas(){
+  const d=[...filtrar()].sort((a,b)=>{
+    const va=a[_sortCol]||'', vb=b[_sortCol]||'';
+    if(typeof va==='number'||!isNaN(Number(va))&&va!=='') return _sortDir*(Number(va)-Number(vb));
+    return _sortDir*String(va).localeCompare(String(vb),'pt-BR');
+  });
+  document.getElementById('rt-contagem').textContent=d.length+' resposta'+(d.length!==1?'s':'');
+  const LOJA_LABEL={'TERE':'Tere.','POTY':'Poty'};
+  const NOTAS=['','😞','😐','🙂','😊','🤩'];
+  document.getElementById('rt-body').innerHTML=d.map(r=>{
+    const n=r['Nota (1-5)']||0;
+    const pipClass=n<=2&&n>0?'red':'on';
+    const pips=n?`<span class="nota-pip">${[1,2,3,4,5].map(i=>`<span class="pip${i<=n?' '+pipClass:''}"></span>`).join('')}</span> ${NOTAS[n]||''}`:'-';
+    const loja=r['Loja']||'TERE';
+    const lojaBadge=`<span class="badge-loja badge-${loja.toLowerCase()}">${LOJA_LABEL[loja]||loja}</span>`;
+    const vend=r['Vendedor']?`${r['Vendedor Nº']?'<span style="font-size:10px;color:#888">['+r['Vendedor Nº']+']</span> ':''}${r['Vendedor']}`:'-';
+    const cms=[r['cm1'],r['cm2'],r['cm3'],r['cm4']].filter(Boolean);
+    const cmHtml=cms.length?`<span title="${cms.join(' | ')}" style="cursor:help;color:var(--azul2);font-size:11px">💬 ${cms.length} coment.</span>`:'-';
+    let dt='';
+    try{const d2=new Date(r['Data/Hora']);dt=d2.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'})+' '+d2.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}catch(e){dt=r['Data/Hora']||''}
+    return `<tr>
+      <td style="font-size:11px;color:#666">${dt}</td>
+      <td>${lojaBadge}</td>
+      <td>${vend}</td>
+      <td>${pips}</td>
+      <td>${r['Marcas']||'-'}</td>
+      <td style="color:#666">${r['Modelos']||'-'}</td>
+      <td style="color:#666">${r['Faixa de Preço']||'-'}</td>
+      <td style="color:#666">${r['Faixa Etária']||'-'}</td>
+      <td style="color:#666">${r['Sexo']||'-'}</td>
+      <td>${cmHtml}</td>
+      <td style="color:var(--azul2)">${r['Contato']||'-'}</td>
+    </tr>`;
   }).join('');
 }
 
