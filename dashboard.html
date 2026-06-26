@@ -118,7 +118,7 @@ main{padding:24px 32px;max-width:1400px;margin:0 auto}
 <header>
   <div class="hdr-left">
     <div class="logo">World Tennis</div>
-    <div class="sub">Teresina Shopping · Dashboard</div>
+    <div class="sub">Todas as Lojas · Dashboard</div>
   </div>
   <div class="hdr-right">
     <div id="status"><div id="dot"></div><span id="stxt">Conectando...</span></div>
@@ -135,6 +135,11 @@ main{padding:24px 32px;max-width:1400px;margin:0 auto}
 <div class="filtros">
   <div><label>De</label><input type="date" id="f-de" onchange="render()"></div>
   <div><label>Até</label><input type="date" id="f-ate" onchange="render()"></div>
+  <div><label>Loja</label><select id="f-loja" onchange="render()">
+    <option value="">Todas</option>
+    <option value="TERE">Teresina Shopping</option>
+    <option value="POTY">Rio Poty</option>
+  </select></div>
   <div><label>Vendedor</label><select id="f-vend" onchange="render()"><option value="">Todos</option></select></div>
   <div><label>Marca</label><select id="f-marca" onchange="render()"><option value="">Todas</option></select></div>
   <button class="btn-reset" onclick="resetF()">Limpar filtros</button>
@@ -250,6 +255,7 @@ async function carregar(){
         return {
           'Firebase ID':   fbId,
           'Data/Hora':     ts,
+          'Loja':          fbVal(f.loja) || 'TERE',
           'Marcas':        fbVal(f.marcas),
           'Modelos':       fbVal(f.modelos),
           'Faixa de Preço':fbVal(f.faixa_preco),
@@ -258,6 +264,7 @@ async function carregar(){
           'Nota (1-5)':    Number(fbVal(f.nota))||0,
           'Contato':       fbVal(f.contato),
           'Vendedor':      fbVal(f.vendedor),
+          'Vendedor Nº':   fbVal(f.vendedor_numero),
           'cm1':           fbVal(f.cm1),
           'cm2':           fbVal(f.cm2),
           'cm3':           fbVal(f.cm3),
@@ -266,11 +273,15 @@ async function carregar(){
       })
       .filter(d=>d['Firebase ID']);
 
-    const vends=[...new Set(DADOS.map(d=>d['Vendedor']).filter(Boolean))].sort();
+    const vendMap = {};
+    DADOS.forEach(d => {
+      if (d['Vendedor']) vendMap[d['Vendedor']] = d['Vendedor Nº'] || '';
+    });
+    const vends = Object.keys(vendMap).sort();
     const marcas=[...new Set(DADOS.map(d=>d['Marcas']).filter(Boolean))].sort();
     const fv=document.getElementById('f-vend'), fm=document.getElementById('f-marca');
     const sv=fv.value, sm=fm.value;
-    fv.innerHTML='<option value="">Todos</option>'+vends.map(v=>`<option value="${v}">${v}</option>`).join('');
+    fv.innerHTML='<option value="">Todos</option>'+vends.map(v=>`<option value="${v}">${vendMap[v] ? '['+vendMap[v]+'] ' : ''}${v}</option>`).join('');
     fm.innerHTML='<option value="">Todas</option>'+marcas.map(m=>`<option value="${m}">${m}</option>`).join('');
     fv.value=sv; fm.value=sm;
 
@@ -292,19 +303,22 @@ function filtrar(){
   const ate=document.getElementById('f-ate').value;
   const vend=document.getElementById('f-vend').value;
   const marca=document.getElementById('f-marca').value;
+  const loja=document.getElementById('f-loja').value;
   return DADOS.filter(d=>{
     const dt=d['Data/Hora']?new Date(d['Data/Hora']):null;
     if(de&&dt&&dt<new Date(de)) return false;
     if(ate&&dt&&dt>new Date(ate+'T23:59:59')) return false;
     if(vend&&d['Vendedor']!==vend) return false;
     if(marca&&d['Marcas']!==marca) return false;
+    // Docs sem campo loja = registros antigos da TERE
+    if(loja&&(d['Loja']||'TERE')!==loja) return false;
     return true;
   });
 }
 
 function resetF(){
   ['f-de','f-ate'].forEach(id=>document.getElementById(id).value='');
-  ['f-vend','f-marca'].forEach(id=>document.getElementById(id).value='');
+  ['f-vend','f-marca','f-loja'].forEach(id=>document.getElementById(id).value='');
   render();
 }
 
@@ -352,10 +366,17 @@ function renderLinha(d){
 
 function renderVend(d){
   const map={};
-  d.forEach(x=>{const v=x['Vendedor'],n=+x['Nota (1-5)'];if(!v)return;if(!map[v])map[v]={s:0,c:0,tot:0};map[v].tot++;if(n){map[v].s+=n;map[v].c++}});
-  const sorted=Object.entries(map).map(([v,s])=>({nome:v,tot:s.tot,media:s.c?s.s/s.c:0})).sort((a,b)=>b.media-a.media);
+  d.forEach(x=>{
+    const v=x['Vendedor'],n=+x['Nota (1-5)'],num=x['Vendedor Nº']||'',loja=x['Loja']||'TERE';
+    if(!v)return;
+    if(!map[v])map[v]={s:0,c:0,tot:0,num,lojas:new Set()};
+    map[v].tot++;map[v].lojas.add(loja);
+    if(n){map[v].s+=n;map[v].c++}
+  });
+  const sorted=Object.entries(map).map(([v,s])=>({nome:v,tot:s.tot,media:s.c?s.s/s.c:0,num:s.num,lojas:[...s.lojas]})).sort((a,b)=>b.media-a.media);
   const max=Math.max(...sorted.map(v=>v.media),5);
-  document.getElementById('tab-vend').innerHTML=`<table class="vt"><thead><tr><th>Vendedor</th><th>Atend.</th><th>Média</th><th>Desempenho</th></tr></thead><tbody>${sorted.map(v=>`<tr><td><strong>${v.nome}</strong></td><td>${v.tot}</td><td>${v.media?v.media.toFixed(1)+'★':'—'}</td><td><div class="bar-w"><div class="bar-bg"><div class="bar-f" style="width:${(v.media/max*100).toFixed(0)}%"></div></div></div></td></tr>`).join('')}</tbody></table>`;
+  const LOJA_LABEL={'TERE':'Tere.','POTY':'Poty'};
+  document.getElementById('tab-vend').innerHTML=`<table class="vt"><thead><tr><th>Nº</th><th>Vendedor</th><th>Loja(s)</th><th>Atend.</th><th>Média</th><th>Desempenho</th></tr></thead><tbody>${sorted.map(v=>`<tr><td style="color:#5a6482;font-size:12px">${v.num||'—'}</td><td><strong>${v.nome}</strong></td><td style="font-size:11px;color:#5a6482">${v.lojas.map(l=>LOJA_LABEL[l]||l).join(', ')}</td><td>${v.tot}</td><td>${v.media?v.media.toFixed(1)+'★':'—'}</td><td><div class="bar-w"><div class="bar-bg"><div class="bar-f" style="width:${(v.media/max*100).toFixed(0)}%"></div></div></div></td></tr>`).join('')}</tbody></table>`;
 }
 
 function renderDona(id,d,campo){
@@ -389,7 +410,7 @@ function renderComentarios(){
       const n=row['Nota (1-5)'];
       if(notaFiltro==='baixa'&&n>2) return;
       if(notaFiltro==='alta'&&n<4) return;
-      lista.push({texto:txt,tipo:TIPOS[campo],campo,nota:n,vendedor:row['Vendedor'],data:row['Data/Hora'],contato:row['Contato']||''});
+      lista.push({texto:txt,tipo:TIPOS[campo],campo,nota:n,vendedor:row['Vendedor'],vendedorNum:row['Vendedor Nº'],loja:row['Loja']||'TERE',data:row['Data/Hora'],contato:row['Contato']||''});
     });
   });
   lista.sort((a,b)=>new Date(b.data)-new Date(a.data));
@@ -405,7 +426,10 @@ function renderComentarios(){
     let dataFmt='';
     if(c.data){const dt=new Date(c.data);dataFmt=dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+dt.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}
     const contatoHtml = c.contato ? `<span class="cm-contato">📞 ${c.contato}</span>` : '';
-    return `<div class="cm-card ${cls}"><div class="cm-meta">${n?`<span class="cm-nota ${notaCls}">${n}★</span>`:''}<span class="cm-tipo">${c.tipo}</span>${c.vendedor?`<span class="cm-vend">${c.vendedor}</span>`:''}<span class="cm-data">${dataFmt}</span></div><div class="cm-txt">${c.texto}</div>${contatoHtml}</div>`;
+    const LOJA_LABEL={'TERE':'Teresina Shopping','POTY':'Rio Poty'};
+    const lojaHtml=`<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#fff;background:${c.loja==='POTY'?'#2f447a':'#1a2848'};padding:2px 7px;border-radius:10px">${LOJA_LABEL[c.loja]||c.loja}</span>`;
+    const vendHtml=c.vendedor?`<span class="cm-vend">${c.vendedorNum?`[${c.vendedorNum}] `:``}${c.vendedor}</span>`:'';
+    return `<div class="cm-card ${cls}"><div class="cm-meta">${n?`<span class="cm-nota ${notaCls}">${n}★</span>`:''}<span class="cm-tipo">${c.tipo}</span>${vendHtml}${lojaHtml}<span class="cm-data">${dataFmt}</span></div><div class="cm-txt">${c.texto}</div>${contatoHtml}</div>`;
   }).join('');
 }
 
