@@ -6,6 +6,7 @@
 <title>Dashboard — World Tennis Teresina Shopping</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -117,6 +118,47 @@ main{padding:24px 32px;max-width:1400px;margin:0 auto}
 .cm-contato{display:inline-block;margin-top:6px;font-size:12px;color:var(--azul2);font-weight:600;background:var(--cinza);padding:3px 9px;border-radius:20px}
 .cm-vazio{text-align:center;color:var(--texto2);padding:40px;font-size:14px}
 
+/* ===== CARD COMPARTILHAVEL (destaques + modal) ===== */
+.dk{background:linear-gradient(155deg,#1a2848 0%,#243562 55%,#2f447a 100%);border-radius:16px;padding:26px 28px 22px;color:#fff;position:relative;overflow:hidden}
+.dk::after{content:'';position:absolute;right:-40px;top:-40px;width:150px;height:150px;border-radius:50%;background:rgba(232,200,74,.07)}
+.dk-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px;position:relative;z-index:1}
+.dk-logo{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;color:var(--dourado);letter-spacing:1.6px;text-transform:uppercase;line-height:1}
+.dk-logo span{display:block;font-family:'Barlow',sans-serif;font-size:9.5px;font-weight:500;color:rgba(255,255,255,.45);letter-spacing:1.6px;margin-top:3px}
+.dk-loja{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--azul);background:var(--dourado);padding:4px 10px;border-radius:20px;white-space:nowrap}
+.dk-stars{font-size:22px;color:var(--dourado);letter-spacing:4px;line-height:1;margin-bottom:12px;position:relative;z-index:1}
+.dk-txt{font-size:17px;line-height:1.5;font-weight:500;color:#fff;position:relative;z-index:1;quotes:'“' '”'}
+.dk-txt::before{content:open-quote;color:var(--dourado);font-family:'Barlow Condensed',sans-serif;font-size:30px;line-height:0;vertical-align:-8px;margin-right:2px}
+.dk-txt::after{content:close-quote;color:var(--dourado);font-family:'Barlow Condensed',sans-serif;font-size:30px;line-height:0;vertical-align:-8px;margin-left:2px}
+.dk-foot{margin-top:18px;padding-top:13px;border-top:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:space-between;gap:10px;position:relative;z-index:1}
+.dk-vend{font-size:13.5px;font-weight:600;color:#fff}
+.dk-vend b{color:var(--dourado);font-weight:700}
+.dk-data{font-size:11px;color:rgba(255,255,255,.5);white-space:nowrap}
+.dk.mini .dk-txt{font-size:15px}
+.dk.mini{padding:22px 24px 18px}
+
+.dest-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.dest-nav{display:flex;align-items:center;gap:8px}
+.dest-btn{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--cinza2);background:var(--branco);color:var(--texto2);cursor:pointer;font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.dest-btn:hover{border-color:var(--azul);color:var(--azul)}
+.dest-dots{display:flex;gap:5px}
+.dest-dot{width:7px;height:7px;border-radius:50%;background:var(--cinza2);cursor:pointer;transition:all .2s}
+.dest-dot.on{background:var(--dourado);width:18px;border-radius:4px}
+.dest-hint{font-size:11px;color:var(--texto2)}
+
+.cm-card{cursor:pointer;transition:box-shadow .18s,transform .18s}
+.cm-card:hover{box-shadow:0 4px 14px rgba(26,40,72,.13);transform:translateY(-1px)}
+.cm-card::after{content:'🖼 card';float:right;font-size:10px;font-weight:700;color:var(--texto2);opacity:0;transition:opacity .18s}
+.cm-card:hover::after{opacity:.7}
+
+#modal{position:fixed;inset:0;background:rgba(12,18,36,.72);z-index:900;display:none;align-items:center;justify-content:center;padding:20px}
+#modal.on{display:flex}
+.modal-box{background:var(--branco);border-radius:16px;padding:20px;max-width:560px;width:100%;max-height:92vh;overflow:auto}
+.modal-acoes{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.mb{padding:9px 16px;border-radius:8px;border:none;font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+.mb-1{background:var(--azul);color:#fff}.mb-1:hover{background:var(--azul2)}
+.mb-2{background:var(--dourado);color:var(--azul)}.mb-2:hover{background:var(--ouro2)}
+.mb-3{background:transparent;border:1.5px solid var(--cinza2);color:var(--texto2);margin-left:auto}.mb-3:hover{border-color:var(--azul);color:var(--azul)}
+
 #overlay{position:fixed;inset:0;background:var(--azul);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;transition:opacity .4s}
 #overlay.hide{opacity:0;pointer-events:none}
 .ov-logo{font-family:'Barlow Condensed',sans-serif;font-size:40px;font-weight:800;color:var(--dourado);letter-spacing:2px}
@@ -169,8 +211,22 @@ main{padding:24px 32px;max-width:1400px;margin:0 auto}
       <div class="sc d"><div class="sc-lbl">Total de respostas</div><div class="sc-val" id="sc-tot">—</div><div class="sc-sub">no período</div></div>
       <div class="sc v"><div class="sc-lbl">Média geral</div><div class="sc-val" id="sc-med">—</div><div class="sc-sub">de 5 estrelas</div></div>
       <div class="sc r"><div class="sc-lbl">Notas baixas</div><div class="sc-val" id="sc-bx">—</div><div class="sc-sub">notas 1 ou 2</div></div>
-      <div class="sc"><div class="sc-lbl">Melhor vendedor</div><div class="sc-val sm" id="sc-mv">—</div><div class="sc-sub" id="sc-mv2"></div></div>
+      <div class="sc" title="Índice de Destaque: combina volume de avaliações, % de avaliações com comentário, profundidade do comentário e nota média."><div class="sc-lbl">Destaque do período</div><div class="sc-val sm" id="sc-mv">—</div><div class="sc-sub" id="sc-mv2"></div></div>
       <div class="sc"><div class="sc-lbl">Marca top</div><div class="sc-val sm" id="sc-mt">—</div><div class="sc-sub" id="sc-mt2"></div></div>
+    </div>
+
+    <div class="card" style="margin-bottom:18px">
+      <div class="dest-head">
+        <div class="card-ttl" style="margin:0">⭐ Destaques para compartilhar</div>
+        <div class="dest-nav">
+          <span class="dest-hint" id="dest-hint"></span>
+          <button class="dest-btn" onclick="destNav(-1)" title="Anterior">‹</button>
+          <div class="dest-dots" id="dest-dots"></div>
+          <button class="dest-btn" onclick="destNav(1)" title="Próximo">›</button>
+          <button class="dest-btn" id="dest-play" onclick="destPlay()" title="Pausar/retomar" style="width:auto;padding:0 10px;border-radius:14px">⏸</button>
+        </div>
+      </div>
+      <div id="dest-slot"></div>
     </div>
 
     <div class="grid2">
@@ -205,6 +261,7 @@ main{padding:24px 32px;max-width:1400px;margin:0 auto}
         </select>
         <span class="cm-count" id="cm-count"></span>
       </div>
+      <div class="dest-hint" style="margin:-8px 0 12px">💡 Clique em qualquer comentário para gerar um card pronto para print ou compartilhamento.</div>
       <div class="cm-lista" id="cm-lista">
         <div class="cm-vazio">Carregando comentários...</div>
       </div>
@@ -239,6 +296,17 @@ main{padding:24px 32px;max-width:1400px;margin:0 auto}
   </div>
 </main>
 
+<div id="modal" onclick="if(event.target===this)fecharCard()">
+  <div class="modal-box">
+    <div id="modal-card"></div>
+    <div class="modal-acoes">
+      <button class="mb mb-2" onclick="baixarCard()">🖼️ Baixar imagem</button>
+      <button class="mb mb-1" onclick="copiarCard(this)">📋 Copiar texto</button>
+      <button class="mb mb-3" onclick="fecharCard()">Fechar</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const FB_PROJECT = 'wt-satisfacao-pdv';
 const FB_KEY     = 'AIzaSyDwAL3IkbGaLXVFDZELIvrz5OTztKu2NHE';
@@ -260,6 +328,12 @@ function trocarAba(aba){
 }
 
 function destroyChart(id){if(charts[id]){charts[id].destroy();delete charts[id]}}
+
+// "Olympikus, Asics" sao duas marcas; "Outros (Hoka, Reebok…)" e uma so.
+function splitMarcas(s){
+  if(!s) return [];
+  return String(s).split(/,(?![^(]*\))/).map(x=>x.trim()).filter(Boolean);
+}
 
 function fbVal(f){
   if(!f) return '';
@@ -326,7 +400,7 @@ async function carregar(){
       if (d['Vendedor']) vendMap[d['Vendedor']] = d['Vendedor Nº'] || '';
     });
     const vends = Object.keys(vendMap).sort();
-    const marcas=[...new Set(DADOS.map(d=>d['Marcas']).filter(Boolean))].sort();
+    const marcas=[...new Set(DADOS.flatMap(d=>splitMarcas(d['Marcas'])))].sort();
     const fv=document.getElementById('f-vend'), fm=document.getElementById('f-marca');
     const sv=fv.value, sm=fm.value;
     fv.innerHTML='<option value="">Todos</option>'+vends.map(v=>`<option value="${v}">${vendMap[v] ? '['+vendMap[v]+'] ' : ''}${v}</option>`).join('');
@@ -357,7 +431,7 @@ function filtrar(){
     if(de&&dt&&dt<new Date(de)) return false;
     if(ate&&dt&&dt>new Date(ate+'T23:59:59')) return false;
     if(vend&&d['Vendedor']!==vend) return false;
-    if(marca&&d['Marcas']!==marca) return false;
+    if(marca&&!splitMarcas(d['Marcas']).includes(marca)) return false;
     // Docs sem campo loja = registros antigos da TERE
     if(loja&&(d['Loja']||'TERE')!==loja) return false;
     return true;
@@ -373,11 +447,12 @@ function resetF(){
 function render(){
   const d=filtrar();
   renderSc(d); renderLinha(d); renderVend(d);
-  renderDona('ch-marcas',d,'Marcas');
+  renderDona('ch-marcas',d,'Marcas',true);
   renderDona('ch-idade',d,'Faixa Etária');
   renderDona('ch-preco',d,'Faixa de Preço');
   renderDona('ch-sexo',d,'Sexo');
   renderNotas(d);
+  renderDestaques(d);
   if(document.getElementById('pag-comentarios').style.display!=='none') renderComentarios();
 }
 
@@ -386,14 +461,17 @@ function renderSc(d){
   const comNota=d.filter(x=>x['Nota (1-5)']>0);
   const media=comNota.length?(comNota.reduce((a,x)=>a+(+x['Nota (1-5)']),0)/comNota.length).toFixed(1):'—';
   const baixas=d.filter(x=>x['Nota (1-5)']>0&&x['Nota (1-5)']<=2).length;
-  const vMap={};
-  d.forEach(x=>{const v=x['Vendedor'],n=+x['Nota (1-5)'];if(!v||!n)return;if(!vMap[v])vMap[v]={s:0,c:0};vMap[v].s+=n;vMap[v].c++});
+  const rank=indiceVendedores(d);
   let mv='—',mv2='';
-  Object.entries(vMap).sort((a,b)=>(b[1].s/b[1].c)-(a[1].s/a[1].c)).forEach(([v,s],i)=>{if(i===0){mv=v;mv2=(s.s/s.c).toFixed(1)+'★ média'}});
+  if(rank.length){
+    const t=rank[0];
+    mv=t.nome;
+    mv2=`índice ${t.indice.toFixed(0)} · ${t.tot} aval · ${(t.pctComent*100).toFixed(0)}% c/ comentário`;
+  }
   const mMap={};
-  d.forEach(x=>{if(x['Marcas'])mMap[x['Marcas']]=(mMap[x['Marcas']]||0)+1});
+  d.forEach(x=>{splitMarcas(x['Marcas']).forEach(m=>{mMap[m]=(mMap[m]||0)+1})});
   let mt='—',mt2='';
-  Object.entries(mMap).sort((a,b)=>b[1]-a[1]).forEach(([m,c],i)=>{if(i===0){mt=m;mt2=c+' vendas'}});
+  Object.entries(mMap).sort((a,b)=>b[1]-a[1]).forEach(([m,c],i)=>{if(i===0){mt=m;mt2=c+' menções'}});
   document.getElementById('sc-tot').textContent=total;
   document.getElementById('sc-med').textContent=media;
   document.getElementById('sc-bx').textContent=baixas;
@@ -412,25 +490,212 @@ function renderLinha(d){
   charts['linha']=new Chart(ctx,{type:'line',data:{labels:labels.map(l=>{const p=l.split('-');return p[2]+'/'+p[1]}),datasets:[{label:'Respostas',data:labels.map(l=>map[l]),borderColor:AZUL,backgroundColor:'rgba(26,40,72,0.07)',borderWidth:2,pointRadius:4,pointBackgroundColor:AZUL,tension:.3,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:11},color:'#5a6482'}},y:{grid:{color:'#e2e6f0'},ticks:{font:{size:11},color:'#5a6482'},beginAtZero:true,precision:0}}}});
 }
 
-function renderVend(d){
-  const map={};
-  d.forEach(x=>{
-    const v=x['Vendedor'],n=+x['Nota (1-5)'],num=x['Vendedor Nº']||'',loja=x['Loja']||'TERE';
-    if(!v)return;
-    if(!map[v])map[v]={s:0,c:0,tot:0,num,lojas:new Set()};
-    map[v].tot++;map[v].lojas.add(loja);
-    if(n){map[v].s+=n;map[v].c++}
-  });
-  const sorted=Object.entries(map).map(([v,s])=>({nome:v,tot:s.tot,media:s.c?s.s/s.c:0,num:s.num,lojas:[...s.lojas]})).sort((a,b)=>b.media-a.media);
-  const max=Math.max(...sorted.map(v=>v.media),5);
-  const LOJA_LABEL={'TERE':'Tere.','POTY':'Poty'};
-  document.getElementById('tab-vend').innerHTML=`<table class="vt"><thead><tr><th>Nº</th><th>Vendedor</th><th>Loja(s)</th><th>Atend.</th><th>Média</th><th>Desempenho</th></tr></thead><tbody>${sorted.map(v=>`<tr><td style="color:#5a6482;font-size:12px">${v.num||'—'}</td><td><strong>${v.nome}</strong></td><td style="font-size:11px;color:#5a6482">${v.lojas.map(l=>LOJA_LABEL[l]||l).join(', ')}</td><td>${v.tot}</td><td>${v.media?v.media.toFixed(1)+'★':'—'}</td><td><div class="bar-w"><div class="bar-bg"><div class="bar-f" style="width:${(v.media/max*100).toFixed(0)}%"></div></div></div></td></tr>`).join('')}</tbody></table>`;
+/* ===== INDICE DE DESTAQUE DO VENDEDOR =====
+   A nota media sozinha nao separa ninguem (praticamente todo mundo tem 5,0).
+   O indice combina o que de fato diferencia o trabalho no PDV:
+     40% volume de avaliacoes (normalizado dentro da propria loja)
+     25% % das avaliacoes que vieram com comentario
+     15% profundidade do comentario (media de caracteres, teto de 120)
+     10% comentarios ricos (40+ caracteres) sobre o total de avaliacoes
+     10% nota media
+   Quando houver dado de vendas por vendedor, trocar o bloco de volume
+   pela taxa de resposta real (avaliacoes / vendas).                       */
+function chaveVend(nome){
+  return (nome||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()
+    .replace(/ger(ente)?\s*-?\s*/,'').replace(/[^a-z0-9]/g,'');
 }
 
-function renderDona(id,d,campo){
+function indiceVendedores(d){
+  const map={};
+  d.forEach(x=>{
+    const nome=x['Vendedor']; if(!nome) return;
+    const loja=x['Loja']||'TERE';
+    const k=loja+'|'+chaveVend(nome);
+    if(!map[k]) map[k]={nome,loja,num:'',tot:0,soma:0,comNota:0,comComent:0,chars:0,ricos:0};
+    const o=map[k];
+    o.tot++;
+    if(x['Vendedor Nº']&&!o.num) o.num=x['Vendedor Nº'];
+    if(nome.length>o.nome.length) o.nome=nome;
+    const n=+x['Nota (1-5)']; if(n){o.soma+=n;o.comNota++}
+    const txt=['cm1','cm2','cm3','cm4'].map(c=>(x[c]||'').trim()).filter(Boolean).join(' ');
+    if(txt){o.comComent++;o.chars+=txt.length;if(txt.length>=40)o.ricos++}
+  });
+  const arr=Object.values(map).map(o=>Object.assign(o,{
+    media:o.comNota?o.soma/o.comNota:0,
+    pctComent:o.tot?o.comComent/o.tot:0,
+    charsMed:o.comComent?o.chars/o.comComent:0,
+    pctRicos:o.tot?o.ricos/o.tot:0
+  }));
+  const maxLoja={};
+  arr.forEach(o=>{maxLoja[o.loja]=Math.max(maxLoja[o.loja]||0,o.tot)});
+  arr.forEach(o=>{
+    const vol=maxLoja[o.loja]?o.tot/maxLoja[o.loja]:0;
+    o.indice=100*(0.40*vol + 0.25*o.pctComent + 0.15*Math.min(o.charsMed/120,1) + 0.10*o.pctRicos + 0.10*(o.media/5));
+  });
+  return arr.sort((a,b)=>b.indice-a.indice);
+}
+
+function renderVend(d){
+  const sorted=indiceVendedores(d);
+  const LOJA_LABEL={'TERE':'Tere.','POTY':'Poty'};
+  const max=Math.max(...sorted.map(v=>v.indice),1);
+  document.getElementById('tab-vend').innerHTML=
+    `<table class="vt"><thead><tr><th>Nº</th><th>Vendedor</th><th>Loja</th><th>Aval.</th><th>Média</th><th title="% das avaliações que vieram com comentário">Coment.</th><th title="Volume 40% · comentários 25% · profundidade 15% · comentários ricos 10% · nota 10%">Índice</th></tr></thead><tbody>${
+    sorted.map((v,i)=>`<tr><td style="color:#5a6482;font-size:12px">${v.num||'—'}</td><td><strong>${i===0?'🏅 ':''}${v.nome}</strong></td><td style="font-size:11px;color:#5a6482">${LOJA_LABEL[v.loja]||v.loja}</td><td>${v.tot}</td><td>${v.media?v.media.toFixed(1)+'★':'—'}</td><td style="font-size:12px;color:#5a6482">${(v.pctComent*100).toFixed(0)}%</td><td><div class="bar-w"><strong style="font-size:12px;min-width:24px">${v.indice.toFixed(0)}</strong><div class="bar-bg"><div class="bar-f" style="width:${(v.indice/max*100).toFixed(0)}%;background:${i===0?'var(--dourado)':'var(--azul)'}"></div></div></div></td></tr>`).join('')
+    }</tbody></table><div class="dest-hint" style="margin-top:10px">Índice = volume de avaliações (40%) + % com comentário (25%) + profundidade do comentário (15%) + comentários ricos (10%) + nota média (10%). Volume comparado dentro da própria loja.</div>`;
+}
+
+/* ===== DESTAQUES / CARDS COMPARTILHAVEIS ===== */
+const LOJA_NOME={'TERE':'Teresina Shopping','POTY':'Rio Poty'};
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+
+function fmtData(v){
+  if(!v) return '';
+  const dt=new Date(v);
+  return dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'})+' · '+dt.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+}
+
+function cardHTML(c,mini){
+  const n=c.nota||5;
+  const estrelas='★'.repeat(n)+'☆'.repeat(5-n);
+  const vend=c.vendedor?`Atendimento de <b>${esc(c.vendedor)}</b>${c.vendedorNum?' · nº '+esc(c.vendedorNum):''}`:'Avaliação de cliente';
+  return `<div class="dk${mini?' mini':''}">
+    <div class="dk-top">
+      <div class="dk-logo">World Tennis<span>Pesquisa de satisfação</span></div>
+      <div class="dk-loja">${esc(LOJA_NOME[c.loja]||c.loja)}</div>
+    </div>
+    <div class="dk-stars">${estrelas}</div>
+    <div class="dk-txt">${esc(c.texto)}</div>
+    <div class="dk-foot"><div class="dk-vend">${vend}</div><div class="dk-data">${fmtData(c.data)}</div></div>
+  </div>`;
+}
+
+function scoreComent(c,maxData){
+  const t=(c.texto||'').trim();
+  let s=Math.min(t.length,220)+t.split(/\s+/).length*4;
+  if(maxData&&c.data){                                   // destaque recente vale mais
+    const dias=(maxData-new Date(c.data))/864e5;
+    s+=Math.max(0,30-dias/2);
+  }
+  if(/(.)\1{4,}/.test(t)) s-=90;                        // "ameiiiiiii"
+  if(!/[a-zA-ZÀ-ÿ]{3}/.test(t)) s-=250;                 // só símbolos/números
+  if(/atencios|prestativ|educad|paciente|excelente|gentil|simpátic|recomend|conheciment|profissional|voltarei|indico|solícit|solicit/i.test(t)) s+=25;
+  if(c.nota===5) s+=10;
+  return s;
+}
+
+function coletarComentarios(d){
+  const TIPOS={cm1:'Produto',cm2:'Perfil',cm3:'Avaliação',cm4:'Vendedor'};
+  const lista=[];
+  d.forEach(row=>{
+    ['cm1','cm2','cm3','cm4'].forEach(campo=>{
+      const txt=(row[campo]||'').trim();
+      if(!txt) return;
+      lista.push({texto:txt,tipo:TIPOS[campo],campo,nota:row['Nota (1-5)'],vendedor:row['Vendedor'],
+        vendedorNum:row['Vendedor Nº'],loja:row['Loja']||'TERE',data:row['Data/Hora'],contato:row['Contato']||''});
+    });
+  });
+  return lista;
+}
+
+let DESTAQUES=[], destIdx=0, destTimer=null, destRodando=true;
+const DEST_POR_LOJA=2;
+
+function renderDestaques(d){
+  const vistos=new Set();
+  const porLoja={};
+  const maxData=d.reduce((m,x)=>{const t=new Date(x['Data/Hora']);return (!m||t>m)?t:m},null);
+  coletarComentarios(d)
+    .filter(c=>!c.nota||c.nota>=4)
+    .sort((a,b)=>scoreComent(b,maxData)-scoreComent(a,maxData))
+    .forEach(c=>{
+      const k=c.texto.toLowerCase().replace(/\s+/g,' ').trim();
+      if(vistos.has(k)) return;
+      vistos.add(k);
+      (porLoja[c.loja]=porLoja[c.loja]||[]).push(c);
+    });
+  // intercala as lojas para o carrossel alternar Poty / Tere
+  DESTAQUES=[];
+  for(let i=0;i<DEST_POR_LOJA;i++){
+    ['POTY','TERE'].forEach(l=>{ if(porLoja[l]&&porLoja[l][i]) DESTAQUES.push(porLoja[l][i]); });
+    Object.keys(porLoja).forEach(l=>{ if(l!=='POTY'&&l!=='TERE'&&porLoja[l][i]) DESTAQUES.push(porLoja[l][i]); });
+  }
+  if(destIdx>=DESTAQUES.length) destIdx=0;
+  pintarDestaque();
+  agendarDestaque();
+}
+
+function pintarDestaque(){
+  const slot=document.getElementById('dest-slot');
+  const dots=document.getElementById('dest-dots');
+  const hint=document.getElementById('dest-hint');
+  if(!DESTAQUES.length){
+    slot.innerHTML='<div class="cm-vazio">Nenhum comentário no período selecionado.</div>';
+    dots.innerHTML=''; hint.textContent='';
+    return;
+  }
+  const c=DESTAQUES[destIdx];
+  slot.innerHTML=`<div onclick="abrirCard(DESTAQUES[${destIdx}])" style="cursor:pointer" title="Clique para abrir o card em tamanho cheio">${cardHTML(c,true)}</div>`;
+  dots.innerHTML=DESTAQUES.map((_,i)=>`<div class="dest-dot${i===destIdx?' on':''}" onclick="destIr(${i})"></div>`).join('');
+  hint.textContent=`${destIdx+1}/${DESTAQUES.length} · clique no card para ampliar`;
+}
+
+function agendarDestaque(){
+  clearInterval(destTimer);
+  if(destRodando&&DESTAQUES.length>1) destTimer=setInterval(()=>destNav(1),7000);
+}
+function destNav(p){ if(!DESTAQUES.length)return; destIdx=(destIdx+p+DESTAQUES.length)%DESTAQUES.length; pintarDestaque(); }
+function destIr(i){ destIdx=i; pintarDestaque(); agendarDestaque(); }
+function destPlay(){
+  destRodando=!destRodando;
+  document.getElementById('dest-play').textContent=destRodando?'⏸':'▶';
+  agendarDestaque();
+}
+
+/* ===== MODAL DO CARD ===== */
+let CARD_ATUAL=null;
+function abrirCard(c){
+  if(!c) return;
+  CARD_ATUAL=c;
+  document.getElementById('modal-card').innerHTML=cardHTML(c,false);
+  document.getElementById('modal').classList.add('on');
+}
+function fecharCard(){ document.getElementById('modal').classList.remove('on'); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') fecharCard(); });
+
+function copiarCard(btn){
+  if(!CARD_ATUAL) return;
+  const c=CARD_ATUAL;
+  const txt=`⭐ ${'★'.repeat(c.nota||5)} — ${LOJA_NOME[c.loja]||c.loja}\n\n"${c.texto}"\n\n`+
+    (c.vendedor?`Atendimento: ${c.vendedor}${c.vendedorNum?' (nº '+c.vendedorNum+')':''}\n`:'')+
+    `${fmtData(c.data)}\nWorld Tennis · Pesquisa de Satisfação`;
+  navigator.clipboard.writeText(txt).then(()=>{
+    const o=btn.textContent; btn.textContent='✅ Copiado!';
+    setTimeout(()=>btn.textContent=o,1600);
+  }).catch(()=>alert('Não foi possível copiar automaticamente. Selecione o texto do card.'));
+}
+
+function baixarCard(){
+  const el=document.querySelector('#modal-card .dk');
+  if(!el) return;
+  if(typeof html2canvas!=='function'){ alert('Gerador de imagem indisponível (sem internet?). Use o print da tela.'); return; }
+  html2canvas(el,{scale:3,backgroundColor:null,logging:false}).then(canvas=>{
+    const a=document.createElement('a');
+    const c=CARD_ATUAL||{};
+    const nome=(c.vendedor||'comentario').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9]/g,'-');
+    a.download=`WT-${c.loja||''}-${nome}.png`;
+    a.href=canvas.toDataURL('image/png');
+    a.click();
+  }).catch(()=>alert('Não foi possível gerar a imagem. Use o print da tela.'));
+}
+
+function renderDona(id,d,campo,multi){
   destroyChart(id);
   const map={};
-  d.forEach(x=>{if(x[campo])map[x[campo]]=(map[x[campo]]||0)+1});
+  d.forEach(x=>{
+    if(multi) splitMarcas(x[campo]).forEach(v=>{map[v]=(map[v]||0)+1});
+    else if(x[campo]) map[x[campo]]=(map[x[campo]]||0)+1;
+  });
   const entries=Object.entries(map).sort((a,b)=>b[1]-a[1]);
   const ctx=document.getElementById(id).getContext('2d');
   charts[id]=new Chart(ctx,{type:'doughnut',data:{labels:entries.map(e=>e[0]),datasets:[{data:entries.map(e=>e[1]),backgroundColor:CORES,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11},color:'#1a2340',padding:8,boxWidth:12}}}}});
@@ -444,30 +709,25 @@ function renderNotas(d){
   charts['notas']=new Chart(ctx,{type:'bar',data:{labels:['1★','2★','3★','4★','5★'],datasets:[{data:[map[1],map[2],map[3],map[4],map[5]],backgroundColor:['#e74c3c','#e67e22','#f1c40f','#27ae60','#1a2848'],borderRadius:6,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:13},color:'#1a2340'}},y:{grid:{color:'#e2e6f0'},ticks:{font:{size:11},color:'#5a6482'},beginAtZero:true,precision:0}}}});
 }
 
+let COMS_VISIVEIS=[];
 function renderComentarios(){
   const d=filtrar();
   const tipoFiltro=document.getElementById('cm-tipo').value;
   const notaFiltro=document.getElementById('cm-nota-f').value;
-  const TIPOS={cm1:'Produto',cm2:'Perfil',cm3:'Avaliação',cm4:'Vendedor'};
-  let lista=[];
-  d.forEach(row=>{
-    const campos=tipoFiltro?[tipoFiltro]:['cm1','cm2','cm3','cm4'];
-    campos.forEach(campo=>{
-      const txt=(row[campo]||'').trim();
-      if(!txt) return;
-      const n=row['Nota (1-5)'];
-      if(notaFiltro==='baixa'&&n>2) return;
-      if(notaFiltro==='alta'&&n<4) return;
-      lista.push({texto:txt,tipo:TIPOS[campo],campo,nota:n,vendedor:row['Vendedor'],vendedorNum:row['Vendedor Nº'],loja:row['Loja']||'TERE',data:row['Data/Hora'],contato:row['Contato']||''});
-    });
+  let lista=coletarComentarios(d).filter(c=>{
+    if(tipoFiltro&&c.campo!==tipoFiltro) return false;
+    if(notaFiltro==='baixa'&&c.nota>2) return false;
+    if(notaFiltro==='alta'&&c.nota<4) return false;
+    return true;
   });
   lista.sort((a,b)=>new Date(b.data)-new Date(a.data));
+  COMS_VISIVEIS=lista;
   document.getElementById('cm-count').textContent=`${lista.length} comentário${lista.length!==1?'s':''}`;
   if(!lista.length){
     document.getElementById('cm-lista').innerHTML='<div class="cm-vazio">Nenhum comentário encontrado para os filtros selecionados.</div>';
     return;
   }
-  document.getElementById('cm-lista').innerHTML=lista.map(c=>{
+  document.getElementById('cm-lista').innerHTML=lista.map((c,i)=>{
     const n=c.nota;
     const cls=n>=4?'nota-alta':n<=2&&n>0?'nota-baixa':'';
     const notaCls=n?`n${n}`:'';
@@ -477,7 +737,7 @@ function renderComentarios(){
     const LOJA_LABEL={'TERE':'Teresina Shopping','POTY':'Rio Poty'};
     const lojaHtml=`<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#fff;background:${c.loja==='POTY'?'#2f447a':'#1a2848'};padding:2px 7px;border-radius:10px">${LOJA_LABEL[c.loja]||c.loja}</span>`;
     const vendHtml=c.vendedor?`<span class="cm-vend">${c.vendedorNum?`[${c.vendedorNum}] `:``}${c.vendedor}</span>`:'';
-    return `<div class="cm-card ${cls}"><div class="cm-meta">${n?`<span class="cm-nota ${notaCls}">${n}★</span>`:''}<span class="cm-tipo">${c.tipo}</span>${vendHtml}${lojaHtml}<span class="cm-data">${dataFmt}</span></div><div class="cm-txt">${c.texto}</div>${contatoHtml}</div>`;
+    return `<div class="cm-card ${cls}" onclick="abrirCard(COMS_VISIVEIS[${i}])" title="Clique para gerar o card compartilhável"><div class="cm-meta">${n?`<span class="cm-nota ${notaCls}">${n}★</span>`:''}<span class="cm-tipo">${c.tipo}</span>${vendHtml}${lojaHtml}<span class="cm-data">${dataFmt}</span></div><div class="cm-txt">${c.texto}</div>${contatoHtml}</div>`;
   }).join('');
 }
 

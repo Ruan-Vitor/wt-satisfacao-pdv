@@ -1,6 +1,10 @@
 // ============================================================
 //  PainelAdmin.gs — Painel de administração WT
-//  Versão: 2.0 | Maio 2026
+//  Versão: 2.1 | Junho 2026
+//  CORREÇÃO: coluna do Firebase ID estava errada (14 -> 16).
+//  Por isso as exclusões removiam a linha da planilha mas não
+//  apagavam o documento correspondente no Firestore.
+//
 //  Adiciona menu "WT Admin" na planilha com 3 opções:
 //  1. Apagar linhas selecionadas (planilha + Firebase)
 //  2. Apagar por data (testes)
@@ -9,11 +13,12 @@
 
 function onOpen() {
   SpreadsheetApp.getUi()
-    .createMenu("WT Admin")
-    .addItem("Apagar linhas selecionadas", "apagarSelecionadas")
-    .addItem("Apagar por data (testes)", "abrirPainelData")
+    .createMenu('🎾 WT Admin')
+    .addItem('↺ Sincronizar (apenas novos)', 'sincronizarTudo')
+    .addItem('⚠️ Reconstruir tudo do Firebase', 'sincronizarTudoForce')
     .addSeparator()
-    .addItem("🔄 Sincronizar agora", "sincronizarAgora")
+    .addItem('Apagar linhas selecionadas', 'apagarLinhasSelecionadas')
+    .addItem('Apagar por data (testes)', 'apagarPorData')
     .addToUi();
 }
 
@@ -51,7 +56,9 @@ function apagarSelecionadas() {
   );
   if (confirm !== ui.Button.YES) return;
 
-  var ids = sheet.getRange(firstRow, 14, qtd, 1).getValues().flat();
+  // CORRIGIDO: coluna 16 (P) = "Firebase ID". Antes estava 14 (N),
+  // que é a coluna "Comentário Ava" — por isso o ID vinha vazio.
+  var ids = sheet.getRange(firstRow, 16, qtd, 1).getValues().flat();
   var apagados = 0;
 
   ids.forEach(function(id) {
@@ -132,7 +139,8 @@ function apagarPorData(dataStr) {
 
   var apagados = 0;
   linhasParaApagar.forEach(function(rowNum) {
-    var id = sheet.getRange(rowNum, 14).getValue();
+    // CORRIGIDO: coluna 16 (P) = "Firebase ID", não 14 (N).
+    var id = sheet.getRange(rowNum, 16).getValue();
     if (id) {
       var url = "https://firestore.googleapis.com/v1/projects/wt-satisfacao-pdv" +
         "/databases/(default)/documents/respostas/" + id;
@@ -148,3 +156,5 @@ function apagarPorData(dataStr) {
 
   return "✅ " + apagados + " registro(s) apagado(s) para " + dataStr + ".";
 }
+
+function apagarLinhasSelecionadas() { apagarSelecionadas(); }
