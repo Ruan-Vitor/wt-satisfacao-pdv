@@ -1,5 +1,5 @@
 # 🎽 WT Satisfação PDV — Guia Completo
-## GitHub + Vercel + Firebase + Sheets + Dashboard · Versão 5.0
+## GitHub + Vercel + Firebase + Sheets + Dashboard (app) · Versão 6.0
 
 > Este guia documenta tudo que foi feito no projeto.
 > Todas as etapas estão concluídas ✅
@@ -18,6 +18,7 @@
 | Alerta nota baixa (≤2) | ✅ Tempo real | EmailJS — chega em segundos |
 | Relatório diário 22h | ✅ Ativo | Apps Script — 0% de erros |
 | Dashboard | ✅ No ar | wt-satisfacao-pdv.vercel.app/dashboard.html |
+| Dashboard como app no celular | ✅ Instalável | PWA — ícone da FB na tela principal |
 
 ---
 
@@ -150,6 +151,48 @@ O dashboard lê os dados direto do Firebase em tempo real e exibe gráficos e in
 
 ---
 
+## ETAPA 7 — Dashboard como app no celular (PWA) ✅ CONCLUÍDA
+
+O dashboard virou um **app instalável**: abre em tela cheia, com ícone próprio na tela
+principal do celular, sem barra de navegador. Não passa por loja de aplicativos —
+a instalação é feita direto pelo site.
+
+**Como instalar — Android (Chrome):**
+1. Abrir `https://wt-satisfacao-pdv.vercel.app/dashboard.html` no Chrome
+2. Tocar no botão verde **⬇️ Instalar app** no topo da tela
+   (ou menu ⋮ → *Instalar app* / *Adicionar à tela inicial*)
+3. Confirmar. O ícone da **FB** aparece na tela principal
+
+**Como instalar — iPhone (Safari):**
+1. Abrir o mesmo endereço **no Safari** (no Chrome do iPhone não funciona)
+2. Botão **Compartilhar** ⬆️ → **Adicionar à Tela de Início** → **Adicionar**
+3. O botão ⬇️ *Instalar app* dentro do dashboard mostra esse passo a passo na tela
+
+**O que muda no celular:**
+- Layout adaptado: cartões em 2 colunas, gráficos redimensionados, abas roláveis
+- Filtros ficam recolhidos atrás do botão **⚙️ Filtros** (com bolinha dourada quando há filtro ativo)
+- Funciona **sem internet**: mostra a última carga de dados com o aviso
+  "📴 Sem conexão — mostrando os dados de [data]"
+- Abre rápido: a estrutura do dashboard fica salva no celular
+
+**Arquivos que fazem isso funcionar:**
+
+| Arquivo | Função |
+|---|---|
+| `manifest.json` | Nome, ícones, cores e modo tela cheia do app |
+| `sw.js` | Service Worker — cache da "casca" e funcionamento offline |
+| `icons/` | Ícones do app (192, 512, maskable, Apple, favicon) |
+| `gerar_icones.py` | Gera os ícones a partir de `img/logo-fb.png` |
+
+**Atenção ao mexer no dashboard:**
+Depois de alterar o `dashboard.html`, suba a versão no topo do `sw.js`
+(`const VERSAO = 'wt-dash-v1'` → `'wt-dash-v2'`). Isso força os celulares que já
+instalaram o app a baixarem a versão nova.
+
+**Para trocar o ícone:** substitua `img/logo-fb.png` e rode `python gerar_icones.py`.
+
+---
+
 ## MANUTENÇÃO DO DIA A DIA
 
 | Tarefa | Como fazer |
@@ -162,6 +205,8 @@ O dashboard lê os dados direto do Firebase em tempo real e exibe gráficos e in
 | Inserir dados de teste | `python inserir_testes.py` no VSCode |
 | Ver respostas brutas | console.firebase.google.com → Firestore → respostas |
 | Ver dashboard | wt-satisfacao-pdv.vercel.app/dashboard.html |
+| Instalar o app no celular | Abrir o dashboard no celular → botão ⬇️ Instalar app |
+| Trocar o ícone do app | Trocar `img/logo-fb.png` → `python gerar_icones.py` → `python push.py` |
 | Relatório diário | Chega por e-mail todo dia às 22h automaticamente |
 | Alerta nota baixa | Chega por e-mail em segundos via EmailJS |
 | Verificar acionadores | Apps Script → ícone de relógio ⏰ |
@@ -173,7 +218,11 @@ O dashboard lê os dados direto do Firebase em tempo real e exibe gráficos e in
 | Arquivo | O que faz |
 |---|---|
 | `index.html` | Formulário completo (5 telas + Firebase + EmailJS integrados) |
-| `dashboard.html` | Dashboard de indicadores com gráficos em tempo real |
+| `dashboard.html` | Dashboard de indicadores com gráficos em tempo real (instalável como app) |
+| `manifest.json` | Identidade do app no celular (nome, ícone, cores) |
+| `sw.js` | Service Worker — instalação, cache e modo offline do dashboard |
+| `icons/` | Ícones do app gerados a partir da marca FB |
+| `gerar_icones.py` | Regera os ícones do app |
 | `push.py` | Envia alterações para o GitHub (atualiza o site) |
 | `setup_github.py` | Configuração inicial do repositório (já usado) |
 | `inserir_testes.py` | Insere 40 respostas de teste no Firebase |
@@ -184,5 +233,5 @@ O dashboard lê os dados direto do Firebase em tempo real e exibe gráficos e in
 
 ---
 
-*WT Satisfação PDV v5.0 — World Tennis Teresina Shopping*
-*Última atualização: Junho 2026*
+*WT Satisfação PDV v6.0 — World Tennis Teresina Shopping*
+*Última atualização: Agosto 2026*

@@ -25,3 +25,4 @@ credenciais*.txt
 # Analises internas — nao publicar no site (o Vercel serve tudo que esta na pasta)
 analise-*.md
 mensagens-grupo-*.txt
+complemento-grupo-*.txt

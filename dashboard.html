@@ -2,8 +2,20 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Dashboard — World Tennis Teresina Shopping</title>
+
+<!-- ===== APP NO CELULAR (PWA) ===== -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1a2848">
+<meta name="description" content="Dashboard de satisfação do cliente — World Tennis Teresina Shopping e Rio Poty.">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon-180.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="WT Dashboard">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -164,6 +176,67 @@ main{padding:24px 32px;max-width:1400px;margin:0 auto}
 .ov-logo{font-family:'Barlow Condensed',sans-serif;font-size:40px;font-weight:800;color:var(--dourado);letter-spacing:2px}
 .ov-sub{font-size:13px;color:rgba(255,255,255,0.45);letter-spacing:2px;margin-top:8px;animation:pulse 1.4s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+
+/* ===== APP NO CELULAR: instalacao ===== */
+#btn-instalar{display:none;background:var(--verde);color:#fff;border:none}
+#btn-instalar:hover{background:#2ecc71}
+#aviso-off{display:none;background:#fff4d6;border-bottom:1px solid #e8d9a8;color:#8a6d1f;font-size:12.5px;padding:8px 32px;text-align:center}
+#aviso-off.on{display:block}
+#ios-box{position:fixed;inset:0;background:rgba(12,18,36,.72);z-index:950;display:none;align-items:flex-end;justify-content:center;padding:16px}
+#ios-box.on{display:flex}
+.ios-card{background:var(--branco);border-radius:16px;padding:22px 20px;max-width:420px;width:100%}
+.ios-ttl{font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:800;color:var(--azul);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
+.ios-passo{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.45;margin-bottom:10px;color:var(--texto)}
+.ios-num{flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--azul);color:var(--dourado);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+.aba-filtro{display:none}
+
+/* ===== CELULAR ===== */
+@media(max-width:640px){
+  header{position:static;padding:calc(10px + env(safe-area-inset-top)) 14px 10px;flex-wrap:wrap;gap:8px}
+  .hdr-left .logo{font-size:18px}
+  .hdr-left .sub{font-size:9.5px;letter-spacing:1.2px}
+  .hdr-right{gap:6px;flex-wrap:wrap;width:100%;justify-content:flex-start}
+  .hdr-right #status{order:3;margin-left:auto}
+  .btn-hdr{padding:6px 11px;font-size:12px}
+  #stxt{font-size:11px}
+
+  .abas{padding:0 8px;position:sticky;top:0;z-index:100;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .abas::-webkit-scrollbar{display:none}
+  .aba{padding:12px 11px;font-size:12.5px;white-space:nowrap}
+  .aba-filtro{display:block;margin-left:auto;color:var(--azul2)}
+  .aba-filtro.ativo{color:var(--azul);font-weight:700}
+  .aba-filtro.ativo::after{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--dourado);margin-left:5px;vertical-align:middle}
+
+  /* filtros ficam escondidos ate tocar em "Filtros" */
+  .filtros{display:none;padding:10px 12px;gap:8px 10px}
+  .filtros.aberto{display:flex}
+  .filtros>div{display:flex;align-items:center;gap:4px}
+  .filtros label{font-size:10px;margin-right:2px}
+  .filtros select,.filtros input[type=date]{padding:6px 8px;font-size:12.5px;max-width:150px}
+  .btn-reset{font-size:12px;padding:6px 10px}
+
+  main{padding:14px 12px calc(24px + env(safe-area-inset-bottom))}
+  .scorecards{grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+  .sc{padding:13px 14px}
+  .sc-val{font-size:29px}
+  .sc-val.sm{font-size:17px}
+  .sc-lbl{font-size:10px;letter-spacing:.6px}
+
+  .grid2,.grid4{gap:12px;margin-bottom:12px}
+  .card{padding:15px 14px}
+  .ch-wrap{height:210px}
+  .ch-wrap.tall{height:240px}
+
+  .dk{padding:20px 18px 16px}
+  .dk-txt{font-size:15px}
+  .modal-box{padding:14px}
+  .modal-acoes .mb{flex:1;text-align:center}
+  .mb-3{margin-left:0}
+
+  #aviso-off{padding:8px 14px}
+  .cm-count{margin-left:0}
+}
 </style>
 </head>
 <body>
@@ -180,16 +253,20 @@ main{padding:24px 32px;max-width:1400px;margin:0 auto}
   </div>
   <div class="hdr-right">
     <div id="status"><div id="dot"></div><span id="stxt">Conectando...</span></div>
+    <button class="btn-hdr" id="btn-instalar" onclick="instalarApp()">⬇️ Instalar app</button>
     <button class="btn-hdr btn-sync" id="btn-sync" onclick="carregar()">↺ Atualizar</button>
     <a class="btn-hdr btn-form" href="https://wt-satisfacao-pdv.vercel.app" target="_blank">📍 Teresina Shopping ↗</a>
     <a class="btn-hdr btn-form" href="https://wt-satisfacao-pdv.vercel.app/poty" target="_blank" style="background:var(--azul3);color:#fff;border:1.5px solid var(--azul3)">📍 Rio Poty ↗</a>
   </div>
 </header>
 
+<div id="aviso-off">📴 Sem internet — mostrando os dados da última atualização.</div>
+
 <div class="abas">
   <div class="aba on" id="aba-graficos" onclick="trocarAba('graficos')">📊 Gráficos</div>
   <div class="aba" id="aba-comentarios" onclick="trocarAba('comentarios')">💬 Comentários</div>
   <div class="aba" id="aba-respostas" onclick="trocarAba('respostas')">📋 Todas as respostas</div>
+  <div class="aba aba-filtro" id="aba-filtros" onclick="toggleFiltros()">⚙️ Filtros</div>
 </div>
 
 <div class="filtros">
@@ -307,10 +384,101 @@ main{padding:24px 32px;max-width:1400px;margin:0 auto}
   </div>
 </div>
 
+<div id="ios-box" onclick="if(event.target===this)fecharIOS()">
+  <div class="ios-card">
+    <div class="ios-ttl">📱 Instalar no iPhone</div>
+    <div class="ios-passo"><div class="ios-num">1</div><div>Toque no botão <b>Compartilhar</b> ⬆️ na barra do Safari (embaixo, no meio).</div></div>
+    <div class="ios-passo"><div class="ios-num">2</div><div>Role a lista e toque em <b>Adicionar à Tela de Início</b>.</div></div>
+    <div class="ios-passo"><div class="ios-num">3</div><div>Toque em <b>Adicionar</b>. O ícone da FB aparece na tela principal.</div></div>
+    <div style="font-size:12px;color:var(--texto2);margin:12px 0 14px;line-height:1.4">Precisa ser pelo <b>Safari</b> — no Chrome do iPhone essa opção não existe.</div>
+    <div class="modal-acoes"><button class="mb mb-1" style="width:100%" onclick="fecharIOS()">Entendi</button></div>
+  </div>
+</div>
+
 <script>
 const FB_PROJECT = 'wt-satisfacao-pdv';
 const FB_KEY     = 'AIzaSyDwAL3IkbGaLXVFDZELIvrz5OTztKu2NHE';
 const FB_BASE    = `https://firestore.googleapis.com/v1/projects/${FB_PROJECT}/databases/(default)/documents`;
+
+/* ===========================================================
+   APP NO CELULAR (PWA)
+   - registra o service worker (sw.js)
+   - controla o botao "Instalar app"
+   - guarda a ultima carga de dados p/ funcionar sem internet
+   =========================================================== */
+const CACHE_DADOS = 'wt-dash-ultimos-dados';
+let promptInstalar = null;
+
+// service worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(e => console.warn('SW:', e));
+  });
+}
+
+function ehIOS(){
+  return /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
+function jaInstalado(){
+  return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+}
+function mostrarBotaoInstalar(){
+  if (jaInstalado()) return;
+  document.getElementById('btn-instalar').style.display = 'inline-flex';
+}
+
+// Android / Chrome / Edge: o navegador avisa quando o app pode ser instalado
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  promptInstalar = e;
+  mostrarBotaoInstalar();
+});
+window.addEventListener('appinstalled', () => {
+  promptInstalar = null;
+  document.getElementById('btn-instalar').style.display = 'none';
+});
+// iPhone nao dispara o evento acima: mostra o botao com as instrucoes
+if (ehIOS() && !jaInstalado()) window.addEventListener('load', mostrarBotaoInstalar);
+
+async function instalarApp(){
+  if (promptInstalar){
+    promptInstalar.prompt();
+    await promptInstalar.userChoice;
+    promptInstalar = null;
+    document.getElementById('btn-instalar').style.display = 'none';
+    return;
+  }
+  if (ehIOS()){ document.getElementById('ios-box').classList.add('on'); return; }
+  alert('Para instalar:\n\nAbra o menu do navegador (⋮ no canto) e toque em "Instalar app" ou "Adicionar à tela inicial".');
+}
+function fecharIOS(){ document.getElementById('ios-box').classList.remove('on'); }
+
+// no celular os filtros ficam recolhidos atras do botao "Filtros"
+function toggleFiltros(){
+  document.querySelector('.filtros').classList.toggle('aberto');
+}
+function marcarFiltrosAtivos(){
+  const ids = ['f-de','f-ate','f-loja','f-vend','f-marca'];
+  const algum = ids.some(id => (document.getElementById(id)||{}).value);
+  document.getElementById('aba-filtros').classList.toggle('ativo', algum);
+}
+window.addEventListener('load', () => {
+  ['f-de','f-ate','f-loja','f-vend','f-marca'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('change', marcarFiltrosAtivos);
+  });
+  document.querySelector('.btn-reset').addEventListener('click', () => setTimeout(marcarFiltrosAtivos, 0));
+});
+
+function salvarCache(dados){
+  try { localStorage.setItem(CACHE_DADOS, JSON.stringify({ quando: Date.now(), dados })); }
+  catch(e){ /* sem espaco: segue sem cache */ }
+}
+function lerCache(){
+  try { return JSON.parse(localStorage.getItem(CACHE_DADOS) || 'null'); }
+  catch(e){ return null; }
+}
 
 const AZUL='#1a2848', DOURADO='#e8c84a';
 const CORES=['#1a2848','#2f447a','#e8c84a','#5a6482','#27ae60','#d4d8ec','#a0a8c4','#3d5296','#f5d96a','#8899cc'];
@@ -359,6 +527,20 @@ async function fetchTodos(){
   return docs;
 }
 
+function atualizarFiltros(){
+  const vendMap = {};
+  DADOS.forEach(d => {
+    if (d['Vendedor']) vendMap[d['Vendedor']] = d['Vendedor Nº'] || '';
+  });
+  const vends = Object.keys(vendMap).sort();
+  const marcas=[...new Set(DADOS.flatMap(d=>splitMarcas(d['Marcas'])))].sort();
+  const fv=document.getElementById('f-vend'), fm=document.getElementById('f-marca');
+  const sv=fv.value, sm=fm.value;
+  fv.innerHTML='<option value="">Todos</option>'+vends.map(v=>`<option value="${v}">${vendMap[v] ? '['+vendMap[v]+'] ' : ''}${v}</option>`).join('');
+  fm.innerHTML='<option value="">Todas</option>'+marcas.map(m=>`<option value="${m}">${m}</option>`).join('');
+  fv.value=sv; fm.value=sm;
+}
+
 async function carregar(){
   const btn=document.getElementById('btn-sync');
   const dot=document.getElementById('dot');
@@ -395,25 +577,31 @@ async function carregar(){
       })
       .filter(d=>d['Firebase ID']);
 
-    const vendMap = {};
-    DADOS.forEach(d => {
-      if (d['Vendedor']) vendMap[d['Vendedor']] = d['Vendedor Nº'] || '';
-    });
-    const vends = Object.keys(vendMap).sort();
-    const marcas=[...new Set(DADOS.flatMap(d=>splitMarcas(d['Marcas'])))].sort();
-    const fv=document.getElementById('f-vend'), fm=document.getElementById('f-marca');
-    const sv=fv.value, sm=fm.value;
-    fv.innerHTML='<option value="">Todos</option>'+vends.map(v=>`<option value="${v}">${vendMap[v] ? '['+vendMap[v]+'] ' : ''}${v}</option>`).join('');
-    fm.innerHTML='<option value="">Todas</option>'+marcas.map(m=>`<option value="${m}">${m}</option>`).join('');
-    fv.value=sv; fm.value=sm;
+    atualizarFiltros();
+    salvarCache(DADOS);
+    document.getElementById('aviso-off').classList.remove('on');
 
     dot.className='ok'; stxt.textContent=`${DADOS.length} respostas carregadas`;
     render();
   } catch(e){
-    dot.className='err'; stxt.textContent='Erro ao carregar';
     console.error('Erro Firebase:', e);
-    document.getElementById('overlay').classList.add('hide');
-    alert('Erro ao carregar dados.\n\nVerifique as regras do Firestore: a leitura da coleção "respostas" precisa estar permitida com a apiKey.\n\nDetalhes no console (F12).');
+    const guardado = lerCache();
+
+    // sem internet (ou Firebase fora do ar): usa a ultima carga guardada
+    if (guardado && guardado.dados && guardado.dados.length){
+      DADOS = guardado.dados;
+      atualizarFiltros();
+      const qdo = new Date(guardado.quando);
+      const aviso = document.getElementById('aviso-off');
+      aviso.textContent = `📴 Sem conexão — mostrando os dados de ${qdo.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})} às ${qdo.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}.`;
+      aviso.classList.add('on');
+      dot.className='err'; stxt.textContent='Offline — dados salvos';
+      render();
+    } else {
+      dot.className='err'; stxt.textContent='Erro ao carregar';
+      document.getElementById('overlay').classList.add('hide');
+      alert('Erro ao carregar dados.\n\nVerifique a conexão com a internet e as regras do Firestore: a leitura da coleção "respostas" precisa estar permitida com a apiKey.\n\nDetalhes no console (F12).');
+    }
   }
 
   btn.disabled=false; btn.textContent='↺ Atualizar';
